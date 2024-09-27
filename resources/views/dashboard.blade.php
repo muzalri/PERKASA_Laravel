@@ -3,5 +3,9 @@
 @section('title', 'Dashboard')
 
 @section('content')
-KONTOOLLL
+<div class="page-heading">
+    <h3>Dashboard</h3>
+</div>
+
+
 @endsection

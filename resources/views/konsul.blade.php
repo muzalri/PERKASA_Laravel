@@ -3,5 +3,7 @@
 @section('title', 'Konsultasi')
 
 @section('content')
-KONTOOLLL
+<div class="page-heading">
+    <h3>Konsultasi Pakar</h3>
+</div>
 @endsection
