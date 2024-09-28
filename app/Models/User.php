@@ -47,4 +47,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+        public function articles()
+    {
+        return $this->hasMany(Komunitas::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(KomunitasLike::class);
+    }
 }

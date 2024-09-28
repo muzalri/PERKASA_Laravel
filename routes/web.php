@@ -25,7 +25,14 @@ Route::post('/profile/edit', [AuthController::class, 'update'])->middleware('aut
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
-Route::get('/komunitas', [KomunitasController::class, 'index'])->middleware('auth')->name('komunitas');
+
+Route::prefix('komunitas')->group(function () {
+    Route::get('/', [KomunitasController::class, 'index'])->middleware('auth')->name('komunitas');
+    
+});
+
+
+
 Route::get('/marketplace', [MarketplaceController::class, 'index'])->middleware('auth')->name('marketplace');
 Route::get('/konsul', [KonsulController::class, 'index'])->middleware('auth')->name('konsul');
 
