@@ -7,6 +7,12 @@ use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\KonsulController;
 use App\Http\Controllers\AuthController;
 
+
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
 //USER
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
