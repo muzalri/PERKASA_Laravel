@@ -23,7 +23,7 @@ Route::get('/profile', [AuthController::class, 'showProfile'])->middleware('auth
 Route::get('/profile/edit', [AuthController::class, 'edit'])->middleware('auth')->name('profile.edit');
 Route::post('/profile/edit', [AuthController::class, 'update'])->middleware('auth')->name('profile.update');
 
-
+Route::get('/profile/{id}', [AuthController::class, 'viewProfile'])->middleware('auth')->name('profile.view');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
 Route::prefix('komunitas')->group(function () {
