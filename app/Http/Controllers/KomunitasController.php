@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Komunitas;
 use App\Models\KomunitasCategory;
 use App\Models\KomunitasLike;
+use App\Models\Komentar;
 
 class KomunitasController extends Controller
 {
@@ -20,15 +22,15 @@ class KomunitasController extends Controller
 
 
     public function index()
-    {
-        $komunitas = Komunitas::with(['user', 'category'])->latest()->paginate(10);
-        return view('komunitas.index', compact('komunitas'));
-    }
+{
+    $komunitas = Komunitas::with(['user', 'category'])->latest()->paginate(10);
+    return view('komunitas.index', compact('komunitas'));
+}
 
 
     public function articlecreate()
     {
-        $categories = Category::all();
+        $categories = KomunitasCategory::all();
         return view('komunitas.create', compact('categories'));
     }
 
@@ -36,7 +38,7 @@ class KomunitasController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255',
-            'komunitas_category_id' => 'required|exists:categories,id',
+            'komunitas_category_id' => 'required|exists:komunitas_categories,id', // Perbaiki table
             'body' => 'required',
         ]);
 
@@ -48,14 +50,12 @@ class KomunitasController extends Controller
         ]);
 
         return redirect()->route('komunitas.show', $komunitas)->with('success', 'Artikel berhasil diposting!');
-
-
     }
 
     public function articleshow(Komunitas $komunitas)
     {
         $komunitas->load(['user', 'category', 'likes']);
-        return view('articles.show', compact('komunitas'));
+        return view('komunitas.show', compact('komunitas'));
     }
 
     public function articleedit(Komunitas $komunitas)
@@ -127,5 +127,35 @@ class KomunitasController extends Controller
             'dislikes_count' => $komunitas->dislikesCount(),
         ]);
     }
+
+     /**
+     * Menyimpan komentar baru.
+     */
+    public function komentarstore(Request $request, Komunitas $komunitas)
+    {
+        $request->validate([
+            'body' => 'required|string|max:1000',
+        ]);
+
+        $komunitas->komentars()->create([
+            'user_id' => Auth::id(),
+            'body' => $request->body,
+        ]);
+
+        return redirect()->route('komunitas.show', $komunitas)->with('success', 'Komentar berhasil ditambahkan!');
+    }
+
+    /**
+     * Menghapus komentar.
+     */
+    public function destroy(Komentar $komentar)
+    {
+        $this->authorize('delete', $komentar);
+    
+        $komentar->delete();
+    
+        return back()->with('success', 'Komentar berhasil dihapus!');
+    }
+    
 
 }

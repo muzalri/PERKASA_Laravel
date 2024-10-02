@@ -48,13 +48,18 @@ class User extends Authenticatable
         ];
     }
 
-        public function articles()
+        public function komunitas()
     {
         return $this->hasMany(Komunitas::class);
     }
 
-    public function likes()
+    public function komunitasLikes()
     {
         return $this->hasMany(KomunitasLike::class);
+    }
+
+    public function komentars()
+    {
+        return $this->hasMany(Komentar::class, 'user_id');
     }
 }

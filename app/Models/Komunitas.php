@@ -18,7 +18,12 @@ class Komunitas extends Model
 
     public function category()
     {
-        return $this->belongsTo(KomunitasCategory::class);
+        return $this->belongsTo(KomunitasCategory::class, 'komunitas_category_id');
+    }
+
+    public function komentars()
+    {
+        return $this->hasMany(Komentar::class, 'komunitas_id');
     }
 
     public function likes()
@@ -37,4 +42,5 @@ class Komunitas extends Model
     {
         return $this->likes()->where('is_like', false)->count();
     }
+    
 }

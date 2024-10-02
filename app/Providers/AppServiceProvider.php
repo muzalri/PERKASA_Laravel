@@ -2,23 +2,31 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\Komentar;
+use App\Policies\KomentarPolicy;
+use App\Models\Komunitas;
+use App\Policies\KomunitasPolicy;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
-class AppServiceProvider extends ServiceProvider
+class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * The policy mappings for the application.
      */
-    public function register(): void
-    {
-        //
-    }
+    protected $policies = [
+        Komunitas::class => KomunitasPolicy::class,
+        Komentar::class => KomentarPolicy::class,
+        // ... policy lainnya
+    ];
 
     /**
-     * Bootstrap any application services.
+     * Register any authentication / authorization services.
      */
-    public function boot(): void
+    public function boot()
     {
+        $this->registerPolicies();
+
         //
     }
 }
