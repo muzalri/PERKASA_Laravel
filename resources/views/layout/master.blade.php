@@ -28,7 +28,7 @@
     <div class="sidebar-header">
         <div class="d-flex justify-content-between">
             <div class="logo">
-                <a href="{{route('profile')}}"><img src="{{asset('assets/images/logo/logo.png')}}" alt="Logo" srcset=""></a>
+                <a href="{{route('profile')}}"><img src="  {{asset('assets/images/logo/logo.png')}}" alt="Logo" srcset=""></a>
             </div>
             <div class="toggler">
                 <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -41,36 +41,46 @@
             
             <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : '' }}">
                 <a href="{{ route('dashboard') }}" class='sidebar-link'>
-                    <i class="bi bi-grid-fill"></i>
+                <svg class="bi" width="1em" height="1em" fill="currentColor">
+                                    <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#menu-down')}}"></use>
+                                </svg>
                     <span>Dashboard</span>
                 </a>
             </li>
 
             <li class="sidebar-item {{ Request::is('marketplace') ? 'active' : '' }}">
                 <a href="{{ route('marketplace') }}" class='sidebar-link'>
-                    <i class="bi bi-grid-fill"></i>
+                <svg class="bi" width="1em" height="1em" fill="currentColor">
+                                    <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#shop')}}"></use>
+                                </svg>
                     <span>marketplace</span>
                 </a>
             </li>
 
             <li class="sidebar-item {{ Request::is('komunitas') ? 'active' : '' }}">
                 <a href="{{ route('komunitas') }}" class='sidebar-link'>
-                    <i class="bi bi-grid-fill"></i>
+                <svg class="bi" width="1em" height="1em" fill="currentColor">
+                                    <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#people-fill')}}"></use>
+                                </svg>
                     <span>Komunitas</span>
                 </a>
             </li>
 
             <li class="sidebar-item {{ Request::is('konsul') ? 'active' : '' }}">
                 <a href="{{ route('konsul') }}" class='sidebar-link'>
-                    <i class="bi bi-grid-fill"></i>
+                <svg class="bi" width="1em" height="1em" fill="currentColor">
+                                    <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#chat-left-dots-fill')}}"></use>
+                                </svg>
                     <span>Konsultasi</span>
                 </a>
             </li>
-            
+          
             <li
                 class="sidebar-item  has-sub">
                 <a href="#" class='sidebar-link'>
-                    <i class="bi bi-stack"></i>
+                <svg class="bi" width="1em" height="1em" fill="currentColor">
+                                    <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#align-bottom')}}"></use>
+                                </svg>
                     <span>Components</span>
                 </a>
                 <ul class="submenu ">
