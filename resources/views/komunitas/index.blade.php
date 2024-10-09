@@ -3,8 +3,7 @@
 @section('title', 'Daftar Komunitas')
 
 @section('content')
-<body style="background-color: #E0F7F7;">
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3" >
     <h1>Daftar Article</h1>
     <a href="{{ route('komunitas.create') }}" class="btn btn-success" style="background-color: #34BCC2">Buat Artikel Baru</a>
 </div>
