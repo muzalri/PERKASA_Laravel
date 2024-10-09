@@ -1,0 +1,9 @@
+.sidebar-item {
+    background-color: #fefefe;
+    transition: all 0.5s ease; /* Transisi halus */
+}
+
+.sidebar-item:hover {
+    background-color: #2980b9; /* Ganti warna saat hover */
+    transform: scale(1.1); /* Perbesar tombol */
+}

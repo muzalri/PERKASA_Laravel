@@ -5,6 +5,7 @@
 @section('title', $komunitas->title)
 
 @section('content')
+<body style="background-color: #E0F7F7;">
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>{{ $komunitas->title }}</h1>
     @can('update', $komunitas)
@@ -60,7 +61,7 @@
                 </div>
             @enderror
         </div>
-        <button type="submit" class="btn btn-primary">Kirim Komentar</button>
+        <button type="submit" class="btn btn-primary" style="background-color: #007bff" >Kirim Komentar</button>
     </form>
     @endauth
 
