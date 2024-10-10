@@ -3,9 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="page-heading">
+<!-- <div class="page-heading">
     <h3>Dashboard</h3>
-</div>
+    <h4>bruh</h4>
+</div> -->
 
 
 @endsection

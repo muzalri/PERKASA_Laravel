@@ -24,15 +24,48 @@
     <link rel="shortcut icon" href="{{asset('assets/images/favicon.svg" type="image/x-icon')}}">
 </head>
 
-<body>
-
 
 
 <body>
-    <div id="app">
-        <!-- Pindahkan sidebar ke atas -->
-        <div id="header-sidebar">
-            <div class="sidebar-wrapper active">
+<div id="app">
+    <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 100px;">
+
+        <!-- Bagian Kiri (Logo dan Nama Web) -->
+        <div class="navbar-left" style="display: flex; align-items: center;">
+            <img src="/assets/images/logo/logo.png" alt="Logo" style="width: 70px; height: auto; margin-right: 20px;">
+            <span style="font-weight: bold; font-size: 18px;">Perkasa</span>
+        </div>
+
+        <!-- Bagian Tengah (Navigasi) -->
+       <ul class="nav nav-tabs" id="myTab" role="tablist" style="display: flex; justify-content: center; align-items: center; gap: 20px; list-style: none; margin: 0;">
+            <li class="nav-item" role="presentation">
+                <a  class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="true">Dashboard</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#komunitas" role="tab" aria-controls="komunitas" aria-selected="false">Komunitas</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#konsultasi" role="tab" aria-controls="konsultasi" aria-selected="false">Konsultasi</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#marketplace" role="tab" aria-controls="marketplace" aria-selected="false">Marketplace</a>
+            </li>
+        </ul>
+
+        <!-- Bagian Kanan (WhatsApp, Instagram) -->
+        <div class="navbar-right" style="display: flex; gap: 20px; align-items: center;">
+        <a href="#" style="text-decoration: none;">
+            <img src="whatsapp-icon.png" alt="WhatsApp" style="width: 25px; height: auto;">
+        </a>
+        <a href="#" style="text-decoration: none;">
+            <img src="instagram-icon.png" alt="Instagram" style="width: 25px; height: auto;">
+        </a>
+        </div>
+    </div>
+</div>
+
+        <!-- <div id="header-sidebar"> -->
+            <!-- <div class="sidebar-wrapper active">
                 <div class="sidebar-header">
                     <div class="d-flex justify-content-between">
                         <div class="logo">
@@ -99,7 +132,7 @@
                 <a href="#" class="burger-btn d-block d-xl-none">
                     <i class="bi bi-justify fs-3"></i>
                 </a>
-            </header>
+            </header> -->
             
 
 
@@ -108,7 +141,7 @@
     @yield('content')
 
 
-            <footer>
+            <!-- <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
                         <p>2021 &copy; Mazer</p>
@@ -118,7 +151,7 @@
                                 href="http://ahmadsaugi.com">A. Saugi</a></p>
                     </div>
                 </div>
-            </footer>
+            </footer> -->
         </div>
     </div>
     <script src="{{asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
