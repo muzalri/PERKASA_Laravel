@@ -33,7 +33,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 
 
 // Komunitas (CRUD dan Like/Dislike)
-Route::get('/komunitas/index', [KomunitasController::class, 'index'])->name('komunitas');
+Route::get('/komunitas/index', [KomunitasController::class, 'index'])->middleware('auth')->name('komunitas');
 Route::middleware(['auth'])->group(function () {
     Route::get('/komunitas/create', [KomunitasController::class, 'articlecreate'])->name('komunitas.create');
     Route::post('/komunitas', [KomunitasController::class, 'articlestore'])->name('komunitas.store');
