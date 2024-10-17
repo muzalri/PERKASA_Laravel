@@ -6,7 +6,6 @@
 <div class="article-list" style="display: flex; justify-content: space-between; align-items: center; padding-left: 50px; padding-right: 50px; margin-bottom: 20px; font-family: 'Montserrat', sans-serif">
     <h1>Daftar Artikel</h1>
     <a href="{{ route('komunitas.create') }}" class="underline-btn" >Buat Artikel Baru</a>
-    <h2>kontol</h2>
 </div>
 
 @if($komunitas->count())
