@@ -61,7 +61,7 @@
 
     <!-- Main Content -->
     <main class="dashboard-content">
-        <h1>Welcome to the Dashboard</h1>
+        <h1>Welcome to the Dashboard1</h1>
         <div class="card-container">
             <div class="card">
                 <h2>Community</h2>
