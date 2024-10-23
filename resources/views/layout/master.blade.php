@@ -87,6 +87,9 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="marketplaceLink" onclick="toggleActiveState('marketplaceLink')" href="{{route('marketplace')}}" aria-controls="marketplace" aria-selected="false">Marketplace</a>
                 </li>
+                <li class="nav-item">
+    <a class="nav-link" href="{{ route('guide_books.index') }}">Panduan</a>
+</li>
             </ul>
 
             <!-- Bagian Kanan (WhatsApp, Instagram) -->
