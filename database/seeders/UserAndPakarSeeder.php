@@ -25,6 +25,20 @@ class UserAndPakarSeeder extends Seeder
             // ... tambahkan pengguna lain jika diperlukan ...
         ]);
 
+        DB::table('users')->insert([
+            [
+                'name' => 'Pengguna Biasa2',
+                'email' => 'cibe@gmail.com',
+                'password' => Hash::make('12345678'),
+                'no_hp' => '085817288710',
+                'alamat' => 'Jl. Cisangkui, Kota Bogor',
+                'role' => 'user',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // ... tambahkan pengguna lain jika diperlukan ...
+        ]);
+
         // Seeder untuk Pakar
         DB::table('users')->insert([
             [
