@@ -96,8 +96,8 @@
                     <a class="nav-link text-sm" id="marketplaceLink" onclick="toggleActiveState('marketplaceLink')" href="{{route('marketplace')}}" aria-controls="marketplace" aria-selected="false">Marketplace</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-sm" id="profileLink" onclick="toggleActiveState('profileLink')" href="{{route('profile')}}" aria-controls="profile" aria-selected="false">Profil</a>
-                </li>
+                                <a class="nav-link text-sm" id="profileLink" onclick="toggleActiveState('profileLink')" href="{{route('profile')}}" aria-controls="profile" aria-selected="false">Profil</a>
+                            </li>
             </ul>
 
             <!-- Bagian Kanan (WhatsApp, Instagram) -->
@@ -111,6 +111,10 @@
             </div>
         </div>
     </div>
+
+
+
+
 
     @yield('content')
 
