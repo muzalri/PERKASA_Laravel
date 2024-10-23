@@ -96,8 +96,10 @@
                     <a class="nav-link text-sm" id="marketplaceLink" onclick="toggleActiveState('marketplaceLink')" href="{{route('marketplace')}}" aria-controls="marketplace" aria-selected="false">Marketplace</a>
                 </li>
                 <li class="nav-item">
-                                <a class="nav-link text-sm" id="profileLink" onclick="toggleActiveState('profileLink')" href="{{route('profile')}}" aria-controls="profile" aria-selected="false">Profil</a>
-                            </li>
+                    <a class="nav-link text-sm" id="profileLink" onclick="toggleActiveState('profileLink')" href="{{route('profile')}}" aria-controls="profile" aria-selected="false">Profil</a>
+                </li>
+                <a class="nav-link" href="{{ route('guide_books.index') }}">Panduan</a>
+            </li>
             </ul>
 
             <!-- Bagian Kanan (WhatsApp, Instagram) -->
@@ -116,15 +118,20 @@
 
 
 
-    @yield('content')
+        @yield('content')
 
-    <footer>
-        <div class="text-center px-8 py-4 text-gray-600">
-            <div class="float-left">
-                <p>2021 &copy; Mazer</p>
-            </div>
-            <div class="float-right">
-                <p>Crafted with <span class="text-red-500"><i class="bi bi-heart"></i></span> by <a href="http://ahmadsaugi.com" class="text-blue-500 hover:underline">A. Saugi</a></p>
+
+                <footer>
+                    <div class="footer clearfix mb-0 text-muted" style="text-align: center; padding-left: 30px; padding-right: 30px;">
+                        <div class="float-start">
+                            <p>2021 &copy; Mazer</p>
+                        </div>
+                        <div class="float-end">
+                            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
+                                    href="http://ahmadsaugi.com">A. Saugi</a></p>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </div>
     </footer>
