@@ -10,7 +10,7 @@
 
     <!-- Main Content -->
     <main class="p-12 text-center bg-white min-h-screen">
-        <h1 class="text-4xl mb-8">Selamat datang di Dashboard</h1>
+        <h1 class="text-4xl mb-8">Selamat datang di Dashboard.</h1>
         <div class="flex justify-center flex-wrap gap-8">
             <div class="bg-white border border-gray-200 p-6 w-64 rounded-lg shadow-md transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg">
                 <h2 class="text-2xl mb-4">Komunitas</h2>
