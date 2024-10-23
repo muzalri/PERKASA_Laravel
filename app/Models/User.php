@@ -62,4 +62,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(Komentar::class, 'user_id');
     }
+
+    public function konsultasisSebagaiUser()
+    {
+        return $this->hasMany(Konsultasi::class, 'user_id');
+    }
+
+    public function konsultasisSebagaiPakar()
+    {
+        return $this->hasMany(Konsultasi::class, 'pakar_id');
+    }
+
+    public function pesans()
+    {
+        return $this->hasMany(Pesan::class);
+    }
 }

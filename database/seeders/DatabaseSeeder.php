@@ -15,6 +15,10 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        $this->call([
+            UserAndPakarSeeder::class,
+        ]);
+        
         User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
