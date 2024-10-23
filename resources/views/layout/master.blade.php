@@ -7,7 +7,8 @@
     <title>@yield('title')</title>
 
     <!-- Link to Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
+    @vite('resources/css/app.css')
     <!-- Preconnect and Link to Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -24,52 +25,6 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{asset('assets/images/favicon.svg')}}" type="image/x-icon">
     
-    <style>
-        /* CSS Inline untuk Font dan Navigasi */
-        body {
-            font-family: 'Nunito', sans-serif; /* Penerapan font Nunito di seluruh body */
-            font-size: 20px; /* Ukuran font default */
-        }
-        .nav-link {
-            @apply text-gray-800 hover:bg-blue-500 hover:text-white transition-all px-4 py-2 rounded-lg;
-        }
-        .nav-link.active {
-            @apply bg-blue-500 text-white;
-        }
-
-        .nav-link {
-            transition: background-color 0.3s ease, color 0.3s ease, border-bottom 0.3s ease; /* Animasi transisi */
-        }
-
-        .nav-link.active {
-            background-color: #007bff;
-            color: white;
-            border-bottom: 3px solid green; /* Garis hijau di bawah link yang aktif */
-        }
-
-        .underline-btn {
-            background-color: #28a745; /* Warna hijau cerah */
-            color: white;              /* Warna teks putih */
-            border: none;              /* Hilangkan border */
-            padding: 10px 20px;        /* Padding yang proporsional */
-            font-size: 16px;           /* Ukuran teks yang pas */
-            font-weight: bold;         /* Teks yang tebal */
-            border-radius: 5px;        /* Sudut tombol membulat */
-            cursor: pointer;           /* Mengubah kursor jadi pointer */
-            transition: background-color 0.3s ease, transform 0.2s ease; /* Animasi hover */
-        }
-
-        .underline-btn:hover {
-            background-color: #218838; /* Warna hijau lebih gelap saat di-hover */
-            transform: scale(1.05);    /* Efek zoom saat di-hover */
-        }
-
-        .underline-btn:active{
-            background-color: #1e7e34; /* Warna hijau lebih gelap saat diklik */
-            transform: scale(1);       /* Kembali ke ukuran semula saat diklik */
-        }
-        
-    </style>
 </head>
 
 <body class="font-sans text-base">
