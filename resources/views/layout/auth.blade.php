@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/app.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/pages/auth.css')}}">
+    @vite('resources/css/app.css')
 </head>
 
 <body>
