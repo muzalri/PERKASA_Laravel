@@ -62,5 +62,14 @@ Route::get('/konsultasi', [KonsultasiController::class, 'index'])->middleware('a
 Route::resource('konsultasi', KonsultasiController::class);
 Route::post('konsultasi/{konsultasi}/pesan', [PesanController::class, 'store'])->name('pesan.store');
 
+
+Route::group(['middleware' => ['auth', 'pakar']], function () {
+    Route::get('/guide-books/create', [GuideBookController::class, 'create'])->name('guide_books.create');
+    Route::post('/guide-books', [GuideBookController::class, 'store'])->name('guide_books.store');
+    Route::get('/guide-books/{id}/edit', [GuideBookController::class, 'edit'])->name('guide_books.edit');
+    Route::put('/guide-books/{id}', [GuideBookController::class, 'update'])->name('guide_books.update');
+    Route::delete('/guide-books/{id}', [GuideBookController::class, 'destroy'])->name('guide_books.destroy');
+});
+
 Route::get('/guide-books', [GuideBookController::class, 'index'])->name('guide_books.index');
 Route::get('/guide-books/{id}', [GuideBookController::class, 'show'])->name('guide_books.show');
