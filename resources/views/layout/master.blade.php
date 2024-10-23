@@ -8,6 +8,7 @@
 
     <!-- Link to Tailwind CSS -->
     <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
+    @vite('resources/css/app.css')
     <!-- Preconnect and Link to Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -23,7 +24,6 @@
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{asset('assets/images/favicon.svg')}}" type="image/x-icon">
-    @vite('resources/css/app.css')
     
 </head>
 
