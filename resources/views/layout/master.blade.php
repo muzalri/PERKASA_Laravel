@@ -60,49 +60,130 @@
                         <li><a class="nav-link" id="guideLink" href="{{ route('guide_books.index') }}">Panduan</a></li>
                     </ul>
 
-                    <!-- Right Side (Social Icons) -->
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-600 hover:text-gray-800">
-                            <i class="bi bi-whatsapp text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-600 hover:text-gray-800">
-                            <i class="bi bi-instagram text-xl"></i>
-                        </a>
-                    </div>
-                </div>
+            <!-- Bagian Kanan (WhatsApp, Instagram) -->
+            <div class="navbar-right" style="display: flex; gap: 20px; align-items: center;">
+            <a href="#" style="text-decoration: none;">
+                <img src="whatsapp-icon.png" alt="WhatsApp" style="width: 25px; height: auto;">
+            </a>
+            <a href="#" style="text-decoration: none;">
+                <img src="instagram-icon.png" alt="Instagram" style="width: 25px; height: auto;">
+            </a>
             </div>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="container mx-auto p-8">
-            @yield('content')
-        </main>
-
-        <!-- Footer -->
-        <footer class="bg-white shadow-md mt-12">
-            <div class="container mx-auto px-6 py-4">
-                <div class="flex justify-between items-center">
-                    <p class="text-gray-600">&copy; 2023 Perkasa. All rights reserved.</p>
-                    <p class="text-gray-600">Crafted with <span class="text-red-500"><i class="bi bi-heart-fill"></i></span> by <a href="http://ahmadsaugi.com" class="text-blue-500 hover:underline">A. Saugi</a></p>
-                </div>
-            </div>
-        </footer>
+        </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="{{asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
-    <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
-    <script>
-        // Custom JavaScript for Active Link
-        function setActiveLink() {
-            const currentPath = window.location.pathname;
-            const navLinks = document.querySelectorAll('.nav-link');
+            <!-- <div id="header-sidebar"> -->
+                <!-- <div class="sidebar-wrapper active">
+                    <div class="sidebar-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="logo">
+                                <a href="{{route('profile')}}"><img src="{{asset('assets/images/logo/logo.png')}}" alt="Logo"></a>
+                            </div>
+                            <div class="toggler">
+                                <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidebar-menu">
+                        <ul class="menu">
+                            <li class="sidebar-title">Menu</li>
+                
+                <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}" class='sidebar-link'>
+                    <svg class="bi" width="0.5em" height="1em" fill="currentColor">
+                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#menu-down')}}"></use>
+                                    </svg>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ Request::is('marketplace') ? 'active' : '' }}">
+                    <a href="{{ route('marketplace') }}" class='sidebar-link'>
+                    <svg class="bi" width="1em" height="1em" fill="currentColor">
+                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#shop')}}"></use>
+                                    </svg>
+                        <span>marketplace</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ Request::is('komunitas') ? 'active' : '' }}">
+                    <a href="{{ route('komunitas') }}" class='sidebar-link'>
+                    <svg class="bi" width="1em" height="1em" fill="currentColor">
+                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#people-fill')}}"></use>
+                                    </svg>
+                        <span>Komunitas</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ Request::is('konsul') ? 'active' : '' }}">
+                    <a href="{{ route('konsul') }}" class='sidebar-link'>
+                    <svg class="bi" width="1em" height="1em" fill="currentColor">
+                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#chat-left-dots-fill')}}"></use>
+                                    </svg>
+                        <span>Konsultasi</span>
+                    </a>
+                </li>
             
-            navLinks.forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                } else {
-                    link.classList.remove('active');
+                <li
+                    class="sidebar-item  has-sub">
+                    <a href="#" class='sidebar-link'>
+                    <svg class="bi" width="1em" height="1em" fill="currentColor">
+                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#align-bottom')}}"></use>
+                                    </svg>
+                        <span>Components</span>
+                    
+        <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+    </div>
+            </div>
+            <div id="main">
+                <header class="mb-3">
+                    <a href="#" class="burger-btn d-block d-xl-none">
+                        <i class="bi bi-justify fs-3"></i>
+                    </a>
+                </header> -->
+                
+
+
+
+
+        @yield('content')
+
+
+                <footer>
+                    <div class="footer clearfix mb-0 text-muted" style="text-align: center; padding-left: 30px; padding-right: 30px;">
+                        <div class="float-start">
+                            <p>2021 &copy; Mazer</p>
+                        </div>
+                        <div class="float-end">
+                            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
+                                    href="http://ahmadsaugi.com">A. Saugi</a></p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script src="{{asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
+        <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
+        
+        <script src="{{asset('assets/vendors/apexcharts/apexcharts.js')}}"></script>
+        <script src="{{asset('assets/js/pages/dashboard.js')}}"></script>
+
+        <script src="{{asset('assets/js/mazer.js')}}"></script>
+        <script>
+            // Fungsi untuk mengubah status aktif berdasarkan ID link
+            function toggleActiveState(linkId) {
+                // Simpan ID dari link yang diklik ke localStorage
+                localStorage.setItem('activeLink', linkId);
+            }
+
+            // Fungsi untuk mengatur link aktif saat halaman dimuat
+            function setActiveLinkOnLoad() {
+                // Ambil ID link yang disimpan dari localStorage
+                var activeLinkId = localStorage.getItem('activeLink');
+
+                if (activeLinkId) {
+                    // Jika ada link yang disimpan, tambahkan kelas 'active' ke elemen tersebut
+                    document.getElementById(activeLinkId).classList.add('active');
                 }
             });
         }
