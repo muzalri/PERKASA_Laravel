@@ -6,10 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
 
-<<<<<<< Updated upstream
-    <!-- Link to Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-=======
     <!-- Preconnect and Link to Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -27,116 +23,101 @@
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{asset('assets/images/favicon.svg')}}" type="image/x-icon">
->>>>>>> Stashed changes
     
     <style>
-        /* Custom Inline CSS */
+        /* CSS Inline untuk Font dan Navigasi */
         body {
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Nunito', sans-serif; /* Penerapan font Nunito di seluruh body */
+            font-size: 20px; /* Ukuran font default */
         }
+
+        .nav-link {
+            transition: background-color 0.3s ease, color 0.3s ease, border-bottom 0.3s ease; /* Animasi transisi */
+        }
+
+        .nav-link.active {
+            background-color: #007bff;
+            color: white;
+            border-bottom: 3px solid green; /* Garis hijau di bawah link yang aktif */
+        }
+
+        .underline-btn {
+            background-color: #28a745; /* Warna hijau cerah */
+            color: white;              /* Warna teks putih */
+            border: none;              /* Hilangkan border */
+            padding: 10px 20px;        /* Padding yang proporsional */
+            font-size: 16px;           /* Ukuran teks yang pas */
+            font-weight: bold;         /* Teks yang tebal */
+            border-radius: 5px;        /* Sudut tombol membulat */
+            cursor: pointer;           /* Mengubah kursor jadi pointer */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Animasi hover */
+        }
+
+        .underline-btn:hover {
+            background-color: #218838; /* Warna hijau lebih gelap saat di-hover */
+            transform: scale(1.05);    /* Efek zoom saat di-hover */
+        }
+
+        .underline-btn:active{
+            background-color: #1e7e34; /* Warna hijau lebih gelap saat diklik */
+            transform: scale(1);       /* Kembali ke ukuran semula saat diklik */
+        }
+        
     </style>
 </head>
 
-<body class="bg-gray-100">
+<body class="font-sans text-base">
     <div id="app">
-        <!-- Navigation -->
-        <div class="flex justify-between items-center px-24 py-10 bg-gray-200">
-            <!-- Left Side (Logo and Website Name) -->
+        <div class="flex justify-between items-center px-8 py-4 bg-gray-100 shadow-sm">
+            <!-- Bagian Kiri (Logo dan Nama Web) -->
             <div class="flex items-center">
-                <img src="/assets/images/logo/logo.png" alt="Logo" class="w-16 h-auto mr-4">
-                <span class="text-3xl font-bold">Perkasa</span>
+                <img src="/assets/images/logo/logo.png" alt="Logo" class="w-10 h-auto mr-3">
+                <span class="font-bold text-2xl">Perkasa</span>
             </div>
 
-            <!-- Navigation Links -->
-            <ul class="flex space-x-8">
-                <li>
-                    <a class="text-gray-800 hover:bg-blue-500 hover:text-white transition-all px-4 py-2 rounded-lg" href="{{route('dashboard')}}">Dashboard</a>
+            <!-- Bagian Tengah (Navigasi) -->
+            <ul class="flex justify-center items-center space-x-4 list-none m-0">
+                <li class="nav-item">
+                    <a class="nav-link text-sm" id="dashboardLink" onclick="toggleActiveState('dashboardLink')" href="{{route('dashboard')}}" aria-controls="dashboard" aria-selected="true">Dashboard</a>
                 </li>
-                <li>
-                    <a class="text-gray-800 hover:bg-blue-500 hover:text-white transition-all px-4 py-2 rounded-lg" href="{{route('komunitas')}}">Komunitas</a>
+                <li class="nav-item">
+                    <a class="nav-link text-sm" id="komunitasLink" onclick="toggleActiveState('komunitasLink')" href="{{route('komunitas')}}" aria-controls="komunitas" aria-selected="false">Komunitas</a>
                 </li>
-<<<<<<< Updated upstream
-                <li>
-                    <a class="text-gray-800 hover:bg-blue-500 hover:text-white transition-all px-4 py-2 rounded-lg" href="{{route('konsul')}}">Konsultasi</a>
-=======
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="konsulLink" onclick="toggleActiveState('konsulLink')" href="{{route('konsultasi.index')}}" aria-controls="konsultasi" aria-selected="false">Konsultasi</a>
->>>>>>> Stashed changes
+                <li class="nav-item">
+                    <a class="nav-link text-sm" id="konsulLink" onclick="toggleActiveState('konsulLink')" href="{{route('konsultasi.index')}}" aria-controls="konsultasi" aria-selected="false">Konsultasi</a>
                 </li>
-                <li>
-                    <a class="text-gray-800 hover:bg-blue-500 hover:text-white transition-all px-4 py-2 rounded-lg" href="{{route('marketplace')}}">Marketplace</a>
+                <li class="nav-item">
+                    <a class="nav-link text-sm" id="marketplaceLink" onclick="toggleActiveState('marketplaceLink')" href="{{route('marketplace')}}" aria-controls="marketplace" aria-selected="false">Marketplace</a>
                 </li>
-                <!-- Tambahkan pilihan profil di sini -->
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="profileLink" onclick="toggleActiveState('profileLink')" href="{{route('profile')}}" aria-controls="profile" aria-selected="false">Profil</a>
+                <li class="nav-item">
+                    <a class="nav-link text-sm" id="profileLink" onclick="toggleActiveState('profileLink')" href="{{route('profile')}}" aria-controls="profile" aria-selected="false">Profil</a>
                 </li>
             </ul>
 
-            <!-- Right Side (Social Icons) -->
-            <div class="flex space-x-4">
-                <a href="#" class="hover:opacity-75">
-                    <img src="whatsapp-icon.png" alt="WhatsApp" class="w-6 h-auto">
+            <!-- Bagian Kanan (WhatsApp, Instagram) -->
+            <div class="flex space-x-3 items-center">
+                <a href="#" class="no-underline">
+                    <img src="whatsapp-icon.png" alt="WhatsApp" class="w-5 h-auto">
                 </a>
-                <a href="#" class="hover:opacity-75">
-                    <img src="instagram-icon.png" alt="Instagram" class="w-6 h-auto">
+                <a href="#" class="no-underline">
+                    <img src="instagram-icon.png" alt="Instagram" class="w-5 h-auto">
                 </a>
             </div>
         </div>
-
-<<<<<<< Updated upstream
-        <!-- Main Content -->
-        <div class="container mx-auto p-8">
-            @yield('content')
-=======
-     
-
-
-
-        @yield('content')
-
-
-                <footer>
-                    <div class="footer clearfix mb-0 text-muted" style="text-align: center; padding-left: 30px; padding-right: 30px;">
-                        <div class="float-start">
-                            <p>2021 &copy; Mazer</p>
-                        </div>
-                        <div class="float-end">
-                            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                    href="http://ahmadsaugi.com">A. Saugi</a></p>
-                        </div>
-                    </div>
-                </footer>
-            </div>
->>>>>>> Stashed changes
-        </div>
-
-        <!-- Footer -->
-        <footer class="text-center py-6 bg-gray-200">
-            <p>2021 &copy; Mazer</p>
-            <p>Crafted with <span class="text-red-500"><i class="bi bi-heart"></i></span> by <a href="http://ahmadsaugi.com" class="text-blue-500">A. Saugi</a></p>
-        </footer>
     </div>
 
-    <!-- Scripts -->
-    <script src="{{asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
-    <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
-    <script>
-        // Custom JavaScript for Active Link
-        function toggleActiveState(linkId) {
-            localStorage.setItem('activeLink', linkId);
-        }
+    @yield('content')
 
-        function setActiveLinkOnLoad() {
-            var activeLinkId = localStorage.getItem('activeLink');
-            if (activeLinkId) {
-                document.getElementById(activeLinkId).classList.add('active');
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            setActiveLinkOnLoad();
-        });
-    </script>
+    <footer>
+        <div class="text-center px-8 py-4 text-gray-600">
+            <div class="float-left">
+                <p>2021 &copy; Mazer</p>
+            </div>
+            <div class="float-right">
+                <p>Crafted with <span class="text-red-500"><i class="bi bi-heart"></i></span> by <a href="http://ahmadsaugi.com" class="text-blue-500 hover:underline">A. Saugi</a></p>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>
