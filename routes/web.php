@@ -57,7 +57,10 @@ Route::get('/komunitas/{komunitas}', [KomunitasController::class, 'articleshow']
 
 // Marketplace dan Konsultasi
 Route::get('/marketplace', [MarketplaceController::class, 'index'])->middleware('auth')->name('marketplace');
-Route::get('/konsul', [KonsulController::class, 'index'])->middleware('auth')->name('konsul');
+Route::get('/konsultasi', [KonsultasiController::class, 'index'])->middleware('auth')->name('konsultasi.index');
+
+Route::resource('konsultasi', KonsultasiController::class);
+Route::post('konsultasi/{konsultasi}/pesan', [PesanController::class, 'store'])->name('pesan.store');
 
 Route::get('/guide-books', [GuideBookController::class, 'index'])->name('guide_books.index');
 Route::get('/guide-books/{id}', [GuideBookController::class, 'show'])->name('guide_books.show');

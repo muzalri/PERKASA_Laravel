@@ -82,14 +82,14 @@
                     <a class="nav-link" id="komunitasLink" onclick="toggleActiveState('komunitasLink')" href="{{route('komunitas')}}" aria-controls="komunitas" aria-selected="false">Komunitas</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="konsulLink" onclick="toggleActiveState('konsulLink')" href="{{route('konsul')}}" aria-controls="konsultasi" aria-selected="false">Konsultasi</a>
+                    <a class="nav-link" id="konsulLink" onclick="toggleActiveState('konsulLink')" href="{{route('konsultasi.index')}}" aria-controls="konsultasi" aria-selected="false">Konsultasi</a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="marketplaceLink" onclick="toggleActiveState('marketplaceLink')" href="{{route('marketplace')}}" aria-controls="marketplace" aria-selected="false">Marketplace</a>
-                </li>
+                </li>   
                 <li class="nav-item">
-    <a class="nav-link" href="{{ route('guide_books.index') }}">Panduan</a>
-</li>
+                    <a class="nav-link" href="{{ route('guide_books.index') }}">Panduan</a>
+                </li>
             </ul>
 
             <!-- Bagian Kanan (WhatsApp, Instagram) -->
@@ -103,78 +103,6 @@
             </div>
         </div>
     </div>
-
-            <!-- <div id="header-sidebar"> -->
-                <!-- <div class="sidebar-wrapper active">
-                    <div class="sidebar-header">
-                        <div class="d-flex justify-content-between">
-                            <div class="logo">
-                                <a href="{{route('profile')}}"><img src="{{asset('assets/images/logo/logo.png')}}" alt="Logo"></a>
-                            </div>
-                            <div class="toggler">
-                                <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sidebar-menu">
-                        <ul class="menu">
-                            <li class="sidebar-title">Menu</li>
-                
-                <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('dashboard') }}" class='sidebar-link'>
-                    <svg class="bi" width="0.5em" height="1em" fill="currentColor">
-                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#menu-down')}}"></use>
-                                    </svg>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item {{ Request::is('marketplace') ? 'active' : '' }}">
-                    <a href="{{ route('marketplace') }}" class='sidebar-link'>
-                    <svg class="bi" width="1em" height="1em" fill="currentColor">
-                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#shop')}}"></use>
-                                    </svg>
-                        <span>marketplace</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item {{ Request::is('komunitas') ? 'active' : '' }}">
-                    <a href="{{ route('komunitas') }}" class='sidebar-link'>
-                    <svg class="bi" width="1em" height="1em" fill="currentColor">
-                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#people-fill')}}"></use>
-                                    </svg>
-                        <span>Komunitas</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item {{ Request::is('konsul') ? 'active' : '' }}">
-                    <a href="{{ route('konsul') }}" class='sidebar-link'>
-                    <svg class="bi" width="1em" height="1em" fill="currentColor">
-                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#chat-left-dots-fill')}}"></use>
-                                    </svg>
-                        <span>Konsultasi</span>
-                    </a>
-                </li>
-            
-                <li
-                    class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                    <svg class="bi" width="1em" height="1em" fill="currentColor">
-                                        <use xlink:href="{{asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#align-bottom')}}"></use>
-                                    </svg>
-                        <span>Components</span>
-                    
-        <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
-    </div>
-            </div>
-            <div id="main">
-                <header class="mb-3">
-                    <a href="#" class="burger-btn d-block d-xl-none">
-                        <i class="bi bi-justify fs-3"></i>
-                    </a>
-                </header> -->
-                
-
 
 
 
