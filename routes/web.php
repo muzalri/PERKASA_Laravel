@@ -24,7 +24,10 @@ Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect()->route('login');
+})->name('logout');
 
 // Profil Pengguna
 Route::get('/profile', [AuthController::class, 'showProfile'])->middleware('auth')->name('profile');
@@ -65,5 +68,5 @@ Route::resource('konsultasi', KonsultasiController::class);
 Route::post('konsultasi/{konsultasi}/pesan', [PesanController::class, 'store'])->name('pesan.store');
 
 
-Route::get('/guide-books', [GuideBookController::class, 'index'])->name('guide_books.index');
-Route::get('/guide-books/{id}', [GuideBookController::class, 'show'])->name('guide_books.show');
+
+Route::resource('guide-books', GuideBookController::class)->middleware('auth');

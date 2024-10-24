@@ -98,8 +98,9 @@
                 <li class="nav-item">
                     <a class="nav-link text-sm" id="profileLink" onclick="toggleActiveState('profileLink')" href="{{route('profile')}}" aria-controls="profile" aria-selected="false">Profil</a>
                 </li>
-                <a class="nav-link" href="{{ route('guide_books.index') }}">Panduan</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link text-sm" id="panduanLink" onclick="toggleActiveState('panduanLink')" href="{{ route('guide-books.index') }}" aria-controls="panduan" aria-selected="false">Panduan</a>
+                </li>
             </ul>
 
             <!-- Bagian Kanan (WhatsApp, Instagram) -->

@@ -22,7 +22,7 @@ class User extends Authenticatable
         'password',
         'no_hp',
         'alamat',
-
+        'role',
     ];
 
     /**
@@ -76,5 +76,10 @@ class User extends Authenticatable
     public function pesans()
     {
         return $this->hasMany(Pesan::class);
+    }
+
+    public function isPakar()
+    {
+        return $this->role === 'pakar';
     }
 }
