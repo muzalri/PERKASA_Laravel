@@ -29,36 +29,36 @@
 
 <body class="font-sans text-base">
     <div id="app">
-    <nav class="bg-gray-200 text-gray-800 py-3">
+    <nav class="bg-[#C7D9E4] text-gray-700 py-3">
         <div class="container mx-auto flex items-center">
             <!-- Logo/Nama Web -->
             <div class="flex items-center w-1/4">
                 <img src="/assets/images/logo/logo.png" alt="Logo" class="w-12 h-auto mr-2">
-                <span class="w-11 font-bold text-xl text-gray-900">Perkasa</span>
+                <span class="w-11 font-bold text-xl text-gray-700">Perkasa</span>
             </div>
 
             <!-- Navigasi Tengah -->
-            <ul class="flex space-x-6 justify-center flex-grow ">
-                <li><a href="{{ route('dashboard') }}" class="hover:text-gray-600 transition duration-300 relative group">Dashboard
-                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-600 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <ul class="flex space-x-6 justify-center flex-grow items-center py-4">
+                <li><a href="{{ route('dashboard') }}" class="hover:text-gray-900 transition duration-300 relative group">Dashboard
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
-                <li><a href="{{ route('komunitas') }}" class="hover:text-gray-600 transition duration-300 relative group">Komunitas
-                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-600 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                <li><a href="{{ route('komunitas') }}" class="hover:text-gray-900 transition duration-300 relative group">Komunitas
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
-                <li><a href="{{ route('konsultasi.index') }}" class="hover:text-gray-600 transition duration-300 relative group">Konsultasi
-                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-600 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                <li><a href="{{ route('konsultasi.index') }}" class="hover:text-gray-900 transition duration-300 relative group">Konsultasi
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
-                <li><a href="{{ route('marketplace') }}" class="hover:text-gray-600 transition duration-300 relative group">Marketplace
-                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-600 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                <li><a href="{{ route('marketplace') }}" class="hover:text-gray-900 transition duration-300 relative group">Marketplace
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
-                <li><a href="{{ route('guide_books.index') }}" class="hover:text-gray-600 transition duration-300 relative group">Panduan
-                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-600 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                <li><a href="{{ route('guide_books.index') }}" class="hover:text-gray-900 transition duration-300 relative group">Panduan
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
             </ul>
 
             <!-- Navigasi Kanan -->
             <div class="flex items-center justify-end w-1/4">
-                <a href="{{ route('profile') }}" class="hover:text-gray-600 transition duration-300">
+                <a href="{{ route('profile') }}" class="hover:text-gray-900 transition duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
