@@ -29,7 +29,7 @@
 
 <body class="font-sans text-base">
     <div id="app">
-    <nav class="bg-[#C7D9E4] text-gray-700 py-3">
+    <nav class="bg-[#C7D9E4] text-gray-700 pt-1">
         <div class="container mx-auto flex items-center">
             <!-- Logo/Nama Web -->
             <div class="flex items-center w-1/4">
