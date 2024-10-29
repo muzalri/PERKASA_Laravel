@@ -7,7 +7,6 @@
     <title>@yield('title')</title>
 
     <!-- Link to Tailwind CSS -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
     @vite('resources/css/app.css')
     <!-- Preconnect and Link to Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -29,7 +28,7 @@
 
 <body class="font-sans text-base">
     <div id="app">
-    <nav class="bg-perkasa-blue text-gray-700 py-2">
+    <nav class="bg-perkasa-blue text-black py-2 sticky top-0">
         <div class="container mx-auto flex items-center">
             <!-- Logo/Nama Web -->
             <div class="flex items-center w-1/4">
