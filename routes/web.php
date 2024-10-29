@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KonsultasiController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\GuideBookController;
+use App\Http\Controllers\ChatController;
 
 
 
@@ -67,6 +68,6 @@ Route::get('/konsultasi', [KonsultasiController::class, 'index'])->middleware('a
 Route::resource('konsultasi', KonsultasiController::class);
 Route::post('konsultasi/{konsultasi}/pesan', [PesanController::class, 'store'])->name('pesan.store');
 
-
+Route::post('/upload-image', [ChatController::class, 'uploadImage'])->name('upload.image');
 
 Route::resource('guide-books', GuideBookController::class)->middleware('auth');
