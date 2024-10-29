@@ -6,11 +6,7 @@ module.exports = {
     "./resources/**/*.vue",
   ],
   theme: {
-<<<<<<< Updated upstream
-    extend: {
-=======
     extend:  {
->>>>>>> Stashed changes
       colors: {
         'perkasa-blue': '#7A99A8'
       }
