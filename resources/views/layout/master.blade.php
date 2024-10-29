@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,6 @@
     <title>@yield('title')</title>
 
     <!-- Link to Tailwind CSS -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
     @vite('resources/css/app.css')
     <!-- Preconnect and Link to Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -27,9 +26,8 @@
     
 </head>
 
-<body class="font-sans text-base">
-    <div id="app">
-    <nav class="bg-perkasa-blue text-gray-700 py-2">
+<body class="min-h-screen flex flex-col">
+    <nav class="bg-perkasa-blue text-black py-2 sticky top-0">
         <div class="container mx-auto flex items-center">
             <!-- Logo/Nama Web -->
             <div class="flex items-center w-1/4">
@@ -38,19 +36,19 @@
 
             <!-- Navigasi Tengah -->
             <ul class="flex space-x-6 justify-center flex-grow items-center pt-3">
-                <li><a href="{{ route('dashboard') }}" class="hover:text-gray-900 transition duration-300 relative group">Dashboard
+                <li><a href="{{ route('dashboard') }}" class="text-black hover:text-gray-900 transition duration-300 relative group">Dashboard
                     <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
-                <li><a href="{{ route('komunitas') }}" class="hover:text-gray-900 transition duration-300 relative group">Komunitas
+                <li><a href="{{ route('komunitas') }}" class="text-black hover:text-gray-900 transition duration-300 relative group">Komunitas
                     <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
-                <li><a href="{{ route('konsultasi.index') }}" class="hover:text-gray-900 transition duration-300 relative group">Konsultasi
+                <li><a href="{{ route('konsultasi.index') }}" class="text-black hover:text-gray-900 transition duration-300 relative group">Konsultasi
                     <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
-                <li><a href="{{ route('marketplace') }}" class="hover:text-gray-900 transition duration-300 relative group">Marketplace
+                <li><a href="{{ route('marketplace') }}" class="text-black hover:text-gray-900 transition duration-300 relative group">Marketplace
                     <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
-                <li><a href="{{ route('guide-books.index') }}" class="hover:text-gray-900 transition duration-300 relative group">Panduan
+                <li><a href="{{ route('guide-books.index') }}" class="text-black hover:text-gray-900 transition duration-300 relative group">Panduan
                     <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
             </ul>
@@ -66,20 +64,53 @@
         </div>
     </nav>
 
-    @yield('content')
+    <div class="flex-grow">
+        @yield('content')
+    </div>
 
-
-                <footer>
-                    <div class="footer clearfix mb-0 text-muted" style="text-align: center; padding-left: 30px; padding-right: 30px;">
-                        <div class="float-start">
-                            <p>2021 &copy; Mazer</p>
-                        </div>
-                        <div class="float-end">
-                            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                    href="http://ahmadsaugi.com">A. Saugi</a></p>
-                        </div>
-                    </div>
-                </footer>
+    <footer class="bg-perkasa-blue text-black py-8 w-full">
+        <div class="container mx-auto flex justify-between">
+            <div>
+                <h2 class="font-bold text-lg">Perkasa</h2>
+                <p>Platform inovatif yang memberdayakan anak muda Indonesia.</p>
+                <div class="flex space-x-4 mt-4">
+                    <a href="#" class="text-black"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-black"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-black"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" class="text-black"><i class="bi bi-pinterest"></i></a>
+                </div>
+            </div>
+            <div class="flex space-x-8">
+                <div>
+                    <h3 class="font-semibold">Services</h3>
+                    <ul>
+                        <li><a href="{{ route('dashboard') }}" class="hover:underline text-black">Dashboard</a></li>
+                        <li><a href="{{ route('komunitas') }}" class="hover:underline text-black">Komunitas</a></li>
+                        <li><a href="{{ route('konsultasi.index') }}" class="hover:underline text-black">Konsultasi</a></li>
+                        <li><a href="{{ route('marketplace') }}" class="hover:underline text-black">Marketplace</a></li>
+                        <li><a href="{{ route('guide-books.index') }}" class="hover:underline text-black">Panduan</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold">Resources</h3>
+                    <ul>
+                        <li><a href="#" class="hover:underline text-black">Pricing</a></li>
+                        <li><a href="#" class="hover:underline text-black">FAQs</a></li>
+                        <li><a href="#" class="hover:underline text-black">Contact Support</a></li>
+                        <li><a href="#" class="hover:underline text-black">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:underline text-black">Terms</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold">Support</h3>
+                    <ul>
+                        <li><a href="#" class="hover:underline text-black">Contact</a></li>
+                        <li><a href="#" class="hover:underline text-black">Affiliates</a></li>
+                        <li><a href="#" class="hover:underline text-black">Sitemap</a></li>
+                        <li><a href="#" class="hover:underline text-black">Cancellation Policy</a></li>
+                        <li><a href="#" class="hover:underline text-black">Pricing</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </footer>

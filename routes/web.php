@@ -31,9 +31,13 @@ Route::post('/logout', function () {
 })->name('logout');
 
 // Profil Pengguna
-Route::get('/profile', [AuthController::class, 'showProfile'])->middleware('auth')->name('profile');
-Route::get('/profile/edit', [AuthController::class, 'edit'])->middleware('auth')->name('profile.edit');
-Route::post('/profile/edit', [AuthController::class, 'update'])->middleware('auth')->name('profile.update');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
+    Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/edit', [AuthController::class, 'update'])->name('profile.update');
+    Route::post('/profile/upload-photo', [AuthController::class, 'uploadPhoto'])->name('profile.upload-photo');
+    Route::delete('/profile/delete-photo', [AuthController::class, 'deletePhoto'])->name('profile.delete-photo');
+});
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
