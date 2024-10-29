@@ -6,7 +6,7 @@ module.exports = {
     "./resources/**/*.vue",
   ],
   theme: {
-    extend: {
+    extend:  {
       colors: {
         'perkasa-blue': '#7A99A8'
       }
