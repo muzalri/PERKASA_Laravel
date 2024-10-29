@@ -4,77 +4,26 @@
 
 @section('content')
 <title>Dashboard Page</title>
-    <style>
-        /* Reset margin and padding */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Dashboard Content */
-        .dashboard-content {
-            padding: 50px 30px;
-            text-align: center;
-            background-color: #ffffff;
-            min-height: 100vh;
-        }
-
-        .dashboard-content h1 {
-            font-size: 36px;
-            margin-bottom: 30px;
-        }
-
-        /* Card Container */
-        .card-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-
-        .card {
-            background-color: white;
-            border: 1px solid #ddd;
-            padding: 20px;
-            width: 250px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h2 {
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
-
-        .card p {
-            font-size: 16px;
-        }
-    </style>
+    
 </head>
 <body>
 
     <!-- Main Content -->
     <main class="p-12 text-center bg-white min-h-screen">
-        <h1 class="text-4xl mb-8">Selamat datang di Dashboard</h1>
+        <h1 class="text-4xl mb-8">Selamat datang di Dashboard.</h1>
         <div class="flex justify-center flex-wrap gap-8">
-            <div class="bg-white border border-gray-200 p-6 w-64 rounded-lg shadow-md transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg">
+            <a href="{{ route('komunitas') }}" class="bg-white border border-gray-200 p-6 w-64 rounded-lg shadow-md transition duration-300 ease-in-out hover:-translate-y-2 hover:shadow-lg">
                 <h2 class="text-2xl mb-4">Komunitas</h2>
                 <p class="text-base">Periksa komunitas Anda di sini.</p>
-            </div>
-            <div class="bg-white border border-gray-200 p-6 w-64 rounded-lg shadow-md transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg">
+            </a>
+            <a href="{{ route('konsultasi.index') }}" class="bg-white border border-gray-200 p-6 w-64 rounded-lg shadow-md transition duration-300 ease-in-out hover:-translate-y-2 hover:shadow-lg">
                 <h2 class="text-2xl mb-4">Konsultasi</h2>
                 <p class="text-base">Buat konsultasi Anda di sini.</p>
-            </div>
-            <div class="bg-white border border-gray-200 p-6 w-64 rounded-lg shadow-md transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg">
-                <h2 class="text-2xl mb-4">Marketplace</h2>
-                <p class="text-base">Belanja di sini.</p>
-            </div>
+            </a>
+            <a href="{{ route('guide_books.index') }}" class="bg-white border border-gray-200 p-6 w-64 rounded-lg shadow-md transition duration-300 ease-in-out hover:-translate-y-2 hover:shadow-lg">
+                <h2 class="text-2xl mb-4">Panduan</h2>
+                <p class="text-base">Lihat panduan di sini.</p>
+            </a>
         </div>
 
         <div class="mt-8">
