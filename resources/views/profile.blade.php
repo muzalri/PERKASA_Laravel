@@ -10,7 +10,11 @@
     @endif
 
     <div class="flex items-center mb-6">
-        <img src="{{ asset('path/to/profile-picture.jpg') }}" alt="Foto Profil" class="w-20 h-20 rounded-full mr-4">
+        @if(Auth::user()->profile_picture)
+            <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="Foto Profil" class="w-20 h-20 rounded-full mr-4">
+        @else
+            <i class="fas fa-user-circle text-5xl text-gray-400 mr-4"></i>
+        @endif
         <h3 class="text-2xl font-semibold">Profile</h3>
     </div>
 
