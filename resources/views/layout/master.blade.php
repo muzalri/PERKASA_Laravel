@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 
 <head>
     <meta charset="UTF-8">
@@ -26,8 +26,7 @@
     
 </head>
 
-<body class="font-sans text-base">
-    <div id="app">
+<body class="min-h-screen flex flex-col">
     <nav class="bg-perkasa-blue text-black py-2 sticky top-0">
         <div class="container mx-auto flex items-center">
             <!-- Logo/Nama Web -->
@@ -65,55 +64,53 @@
         </div>
     </nav>
 
-    @yield('content')
+    <div class="flex-grow">
+        @yield('content')
+    </div>
 
-
-                <footer class="bg-perkasa-blue text-black py-8">
-                    <div class="container mx-auto flex justify-between">
-                        <div>
-                            <h2 class="font-bold text-lg">Perkasa</h2>
-                            <p>Platform inovatif yang memberdayakan anak muda Indonesia.</p>
-                            <div class="flex space-x-4 mt-4">
-                                <a href="#" class="text-black"><i class="bi bi-facebook"></i></a>
-                                <a href="#" class="text-black"><i class="bi bi-twitter"></i></a>
-                                <a href="#" class="text-black"><i class="bi bi-linkedin"></i></a>
-                                <a href="#" class="text-black"><i class="bi bi-pinterest"></i></a>
-                            </div>
-                        </div>
-                        <div class="flex space-x-8">
-                            <div>
-                                <h3 class="font-semibold">Services</h3>
-                                <ul>
-                                    <li><a href="{{ route('dashboard') }}" class="hover:underline text-black">Dashboard</a></li>
-                                    <li><a href="{{ route('komunitas') }}" class="hover:underline text-black">Komunitas</a></li>
-                                    <li><a href="{{ route('konsultasi.index') }}" class="hover:underline text-black">Konsultasi</a></li>
-                                    <li><a href="{{ route('marketplace') }}" class="hover:underline text-black">Marketplace</a></li>
-                                    <li><a href="{{ route('guide-books.index') }}" class="hover:underline text-black">Panduan</a></li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">Resources</h3>
-                                <ul>
-                                    <li><a href="#" class="hover:underline text-black">Pricing</a></li>
-                                    <li><a href="#" class="hover:underline text-black">FAQs</a></li>
-                                    <li><a href="#" class="hover:underline text-black">Contact Support</a></li>
-                                    <li><a href="#" class="hover:underline text-black">Privacy Policy</a></li>
-                                    <li><a href="#" class="hover:underline text-black">Terms</a></li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">Support</h3>
-                                <ul>
-                                    <li><a href="#" class="hover:underline text-black">Contact</a></li>
-                                    <li><a href="#" class="hover:underline text-black">Affiliates</a></li>
-                                    <li><a href="#" class="hover:underline text-black">Sitemap</a></li>
-                                    <li><a href="#" class="hover:underline text-black">Cancellation Policy</a></li>
-                                    <li><a href="#" class="hover:underline text-black">Pricing</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
+    <footer class="bg-perkasa-blue text-black py-8 w-full">
+        <div class="container mx-auto flex justify-between">
+            <div>
+                <h2 class="font-bold text-lg">Perkasa</h2>
+                <p>Platform inovatif yang memberdayakan anak muda Indonesia.</p>
+                <div class="flex space-x-4 mt-4">
+                    <a href="#" class="text-black"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-black"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-black"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" class="text-black"><i class="bi bi-pinterest"></i></a>
+                </div>
+            </div>
+            <div class="flex space-x-8">
+                <div>
+                    <h3 class="font-semibold">Services</h3>
+                    <ul>
+                        <li><a href="{{ route('dashboard') }}" class="hover:underline text-black">Dashboard</a></li>
+                        <li><a href="{{ route('komunitas') }}" class="hover:underline text-black">Komunitas</a></li>
+                        <li><a href="{{ route('konsultasi.index') }}" class="hover:underline text-black">Konsultasi</a></li>
+                        <li><a href="{{ route('marketplace') }}" class="hover:underline text-black">Marketplace</a></li>
+                        <li><a href="{{ route('guide-books.index') }}" class="hover:underline text-black">Panduan</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold">Resources</h3>
+                    <ul>
+                        <li><a href="#" class="hover:underline text-black">Pricing</a></li>
+                        <li><a href="#" class="hover:underline text-black">FAQs</a></li>
+                        <li><a href="#" class="hover:underline text-black">Contact Support</a></li>
+                        <li><a href="#" class="hover:underline text-black">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:underline text-black">Terms</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold">Support</h3>
+                    <ul>
+                        <li><a href="#" class="hover:underline text-black">Contact</a></li>
+                        <li><a href="#" class="hover:underline text-black">Affiliates</a></li>
+                        <li><a href="#" class="hover:underline text-black">Sitemap</a></li>
+                        <li><a href="#" class="hover:underline text-black">Cancellation Policy</a></li>
+                        <li><a href="#" class="hover:underline text-black">Pricing</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </footer>

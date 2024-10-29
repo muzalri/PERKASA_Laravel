@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 class AuthController extends Controller
 {
 
@@ -120,6 +122,47 @@ class AuthController extends Controller
         $user->save();
 
         return redirect()->route('dashboard')->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    public function uploadPhoto(Request $request)
+    {
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $user = Auth::user();
+
+        if ($request->hasFile('profile_photo')) {
+            // Hapus foto lama jika ada
+            if ($user->profile_photo) {
+                Storage::disk('public')->delete($user->profile_photo);
+            }
+
+            // Simpan foto baru
+            $path = $request->file('profile_photo')->store('profile-photos', 'public');
+            $user->profile_photo = $path;
+            $user->save();
+        }
+
+        return redirect()->route('profile')->with('success', 'Foto profil berhasil diperbarui!');
+    }
+
+    public function deletePhoto()
+    {
+        $user = Auth::user();
+        
+        if ($user->profile_photo) {
+            // Hapus file foto dari storage
+            Storage::disk('public')->delete($user->profile_photo);
+            
+            // Hapus referensi foto dari database
+            $user->profile_photo = null;
+            $user->save();
+            
+            return redirect()->route('profile')->with('success', 'Foto profil berhasil dihapus!');
+        }
+        
+        return redirect()->route('profile')->with('error', 'Tidak ada foto profil untuk dihapus.');
     }
 
 }
