@@ -10,7 +10,7 @@ class ChatController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mips:2048' // max 2MB
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048' // max 2MB
         ]);
 
         if ($request->hasFile('image')) {

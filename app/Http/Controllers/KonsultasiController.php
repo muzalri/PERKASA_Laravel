@@ -51,6 +51,10 @@ class KonsultasiController extends Controller
      */
     public function show(Konsultasi $konsultasi)
     {
+        if (auth()->id() !== $konsultasi->user_id && auth()->id() !== $konsultasi->pakar_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $konsultasi->load(['pesans.user', 'user', 'pakar']);
         return view('konsultasi.show', compact('konsultasi'));
     }

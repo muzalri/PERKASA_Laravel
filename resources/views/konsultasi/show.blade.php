@@ -15,8 +15,7 @@
                         <h5 class="card-title">{{ $pesan->user->name }}</h5>
                         <p class="card-text">{{ $pesan->isi }}</p>
                         @if ($pesan->gambar)
-                           
-                            <img src="{{ Storage::url($pesan->gambar) }}" class="img-fluid" alt="Gambar Pesan">
+                            <img src="{{ asset('storage/' . $pesan->gambar) }}" class="img-fluid" alt="Gambar Pesan">
                         @endif
                         <p class="card-text"><small class="text-muted">{{ $pesan->created_at->diffForHumans() }}</small></p>
                     </div>
