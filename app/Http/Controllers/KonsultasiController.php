@@ -14,7 +14,33 @@ class KonsultasiController extends Controller
      */
     public function index()
     {
-        $konsultasis = Konsultasi::with(['user', 'pakar'])->get();
+        $user = auth()->user();
+        
+        if ($user->role === 'pakar') {
+            // Jika user adalah pakar, tampilkan konsultasi dimana dia sebagai pakar
+            $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
+                $query->latest();
+            }])
+            ->where('pakar_id', $user->id)
+            ->get();
+        } else {
+            // Jika user adalah pengguna biasa, tampilkan konsultasi dimana dia sebagai user
+            $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
+                $query->latest();
+            }])
+            ->where('user_id', $user->id)
+            ->get();
+        }
+
+        // Tambahkan informasi status balasan untuk setiap konsultasi
+        $konsultasis->each(function ($konsultasi) {
+            $lastMessage = $konsultasi->pesans->first();
+            if ($lastMessage) {
+                $konsultasi->last_status = $lastMessage->status;
+                $konsultasi->last_sender_id = $lastMessage->user_id;
+            }
+        });
+
         return view('konsultasi.index', compact('konsultasis'));
     }
 
@@ -51,8 +77,18 @@ class KonsultasiController extends Controller
      */
     public function show(Konsultasi $konsultasi)
     {
-        if (auth()->id() !== $konsultasi->user_id && auth()->id() !== $konsultasi->pakar_id) {
-            abort(403, 'Unauthorized action.');
+        if (auth()->user()->id === $konsultasi->pakar_id) {
+            $konsultasi->pesans()
+                ->where('user_id', '!=', auth()->id())
+                ->where('status', 'belum_dibaca')
+                ->update(['status' => 'dibaca']);
+        }
+        
+        else if (auth()->user()->id === $konsultasi->user_id) {
+            $konsultasi->pesans()
+                ->where('user_id', '!=', auth()->id())
+                ->where('status', 'belum_dibaca')
+                ->update(['status' => 'dibaca']);
         }
 
         $konsultasi->load(['pesans.user', 'user', 'pakar']);
@@ -92,5 +128,14 @@ class KonsultasiController extends Controller
         $pesan->save();
 
         return redirect()->back()->with('success', 'Pesan berhasil dikirim');
+    }
+
+    public function getMessagesStatus(Konsultasi $konsultasi)
+    {
+        $messages = $konsultasi->pesans()
+            ->select('id', 'status')
+            ->get();
+        
+        return response()->json($messages);
     }
 }

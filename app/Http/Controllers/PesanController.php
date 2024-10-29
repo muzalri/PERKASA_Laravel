@@ -15,10 +15,16 @@ class PesanController extends Controller
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $konsultasi->pesans()
+            ->where('user_id', '!=', auth()->id())
+            ->where('status', '!=', 'dibalas')
+            ->update(['status' => 'dibalas']);
+
         $data = [
             'konsultasi_id' => $konsultasi->id,
             'user_id' => auth()->id(),
             'isi' => $request->isi,
+            'status' => 'belum_dibaca'
         ];
 
         if ($request->hasFile('gambar')) {
@@ -28,6 +34,17 @@ class PesanController extends Controller
 
         Pesan::create($data);
 
-        return redirect()->route('konsultasi.show', $konsultasi)->with('success', 'Pesan berhasil dikirim');
+        return redirect()->route('konsultasi.show', $konsultasi)
+            ->with('success', 'Pesan berhasil dikirim');
+    }
+
+    public function updateStatus(Pesan $pesan, $status)
+    {
+        if (!in_array($status, ['dibaca', 'dibalas'])) {
+            return response()->json(['error' => 'Invalid status'], 400);
+        }
+
+        $pesan->update(['status' => $status]);
+        return response()->json(['success' => true]);
     }
 }
