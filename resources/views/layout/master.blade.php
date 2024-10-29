@@ -51,7 +51,7 @@
                 <li><a href="{{ route('marketplace') }}" class="hover:text-gray-900 transition duration-300 relative group">Marketplace
                     <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
-                <li><a href="{{ route('guide_books.index') }}" class="hover:text-gray-900 transition duration-300 relative group">Panduan
+                <li><a href="{{ route('guide-books.index') }}" class="hover:text-gray-900 transition duration-300 relative group">Panduan
                     <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-700 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                 </a></li>
             </ul>

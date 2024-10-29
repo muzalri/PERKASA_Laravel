@@ -20,7 +20,7 @@
                 <h2 class="text-2xl mb-4">Konsultasi</h2>
                 <p class="text-base">Buat konsultasi Anda di sini.</p>
             </a>
-            <a href="{{ route('guide_books.index') }}" class="bg-white border border-gray-200 p-6 w-64 rounded-lg shadow-md transition duration-300 ease-in-out hover:-translate-y-2 hover:shadow-lg">
+            <a href="{{ route('guide-books.index') }}" class="bg-white border border-gray-200 p-6 w-64 rounded-lg shadow-md transition duration-300 ease-in-out hover:-translate-y-2 hover:shadow-lg">
                 <h2 class="text-2xl mb-4">Panduan</h2>
                 <p class="text-base">Lihat panduan di sini.</p>
             </a>
