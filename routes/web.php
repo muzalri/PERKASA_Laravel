@@ -10,8 +10,18 @@ use App\Http\Controllers\KonsultasiController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\GuideBookController;
 use App\Http\Controllers\ChatController;
+// use App\Http\Controllers\Api\AuthController as ApiAuthController;
 
-
+// Route API
+// Route::group(['prefix' => 'api', 'middleware' => ['api'], 'namespace' => 'Api'], function () {
+//     Route::post('/register', [ApiAuthController::class, 'register'])->withoutMiddleware(['web', 'csrf']);
+//     Route::post('/login', [ApiAuthController::class, 'login'])->withoutMiddleware(['web', 'csrf']);
+    
+//     Route::middleware('auth:sanctum')->group(function () {
+//         Route::post('/logout', [ApiAuthController::class, 'logout'])->withoutMiddleware(['web', 'csrf']);
+//         Route::get('/profile', [ApiAuthController::class, 'profile'])->withoutMiddleware(['web', 'csrf']);
+//     });
+// });
 
 Route::get('/', function () {
     return view('welcome');
