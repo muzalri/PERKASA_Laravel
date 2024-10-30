@@ -80,3 +80,5 @@ Route::post('/pesan/{pesan}/status/{status}', [PesanController::class, 'updateSt
 
 Route::get('/konsultasi/{konsultasi}/messages-status', [KonsultasiController::class, 'getMessagesStatus'])
     ->name('konsultasi.messages-status');
+
+Route::get('/konsultasi/status-updates', [KonsultasiController::class, 'getStatusUpdates']);

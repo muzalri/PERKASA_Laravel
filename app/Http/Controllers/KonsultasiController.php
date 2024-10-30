@@ -17,28 +17,32 @@ class KonsultasiController extends Controller
         $user = auth()->user();
         
         if ($user->role === 'pakar') {
-            // Jika user adalah pakar, tampilkan konsultasi dimana dia sebagai pakar
             $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
                 $query->latest();
             }])
             ->where('pakar_id', $user->id)
+            ->withLastMessageTime()
+            ->withCount(['pesans as unread_count' => function($query) {
+                $query->where('user_id', '!=', auth()->id())
+                      ->where('status', 'belum_dibaca');
+            }])
             ->get();
         } else {
-            // Jika user adalah pengguna biasa, tampilkan konsultasi dimana dia sebagai user
             $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
                 $query->latest();
             }])
             ->where('user_id', $user->id)
+            ->withLastMessageTime()
+            ->withCount(['pesans as unread_count' => function($query) {
+                $query->where('user_id', '!=', auth()->id())
+                      ->where('status', 'belum_dibaca');
+            }])
             ->get();
         }
 
-        // Tambahkan informasi status balasan untuk setiap konsultasi
-        $konsultasis->each(function ($konsultasi) {
-            $lastMessage = $konsultasi->pesans->first();
-            if ($lastMessage) {
-                $konsultasi->last_status = $lastMessage->status;
-                $konsultasi->last_sender_id = $lastMessage->user_id;
-            }
+        // Sort konsultasis berdasarkan pesan terakhir
+        $konsultasis = $konsultasis->sortByDesc(function($konsultasi) {
+            return $konsultasi->pesans->first()?->created_at ?? $konsultasi->created_at;
         });
 
         return view('konsultasi.index', compact('konsultasis'));
@@ -137,5 +141,32 @@ class KonsultasiController extends Controller
             ->get();
         
         return response()->json($messages);
+    }
+
+    public function getStatusUpdates()
+    {
+        $user = auth()->user();
+        
+        $konsultasis = Konsultasi::where(function($query) use ($user) {
+            $query->where('user_id', $user->id)
+                  ->orWhere('pakar_id', $user->id);
+        })
+        ->withCount(['pesans as unread_count' => function($query) {
+            $query->where('user_id', '!=', auth()->id())
+                  ->where('status', 'belum_dibaca');
+        }])
+        ->with(['pesans' => function($query) {
+            $query->latest()->first();
+        }])
+        ->get()
+        ->map(function($konsultasi) {
+            return [
+                'id' => $konsultasi->id,
+                'unread_count' => $konsultasi->unread_count,
+                'last_message_status' => $konsultasi->pesans->first()?->status
+            ];
+        });
+
+        return response()->json($konsultasis);
     }
 }

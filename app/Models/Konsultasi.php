@@ -25,4 +25,15 @@ class Konsultasi extends Model
     {
         return $this->hasMany(Pesan::class);
     }
+
+    public function scopeWithLastMessageTime($query)
+    {
+        return $query->addSelect([
+            'last_message_time' => Pesan::select('created_at')
+                ->whereColumn('konsultasi_id', 'konsultasis.id')
+                ->latest()
+                ->limit(1)
+        ])
+        ->orderByDesc('last_message_time');
+    }
 }

@@ -24,6 +24,11 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{asset('assets/images/favicon.svg')}}" type="image/x-icon">
     
+    <!-- Tambahkan ini di bagian head -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS lainnya -->
+    @stack('styles')
 </head>
 
 <body class="min-h-screen flex flex-col">

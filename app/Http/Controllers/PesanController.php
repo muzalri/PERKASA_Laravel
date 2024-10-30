@@ -24,7 +24,8 @@ class PesanController extends Controller
             'konsultasi_id' => $konsultasi->id,
             'user_id' => auth()->id(),
             'isi' => $request->isi,
-            'status' => 'belum_dibaca'
+            'status' => 'belum_dibaca',
+            'created_at' => now(),
         ];
 
         if ($request->hasFile('gambar')) {
@@ -33,6 +34,8 @@ class PesanController extends Controller
         }
 
         Pesan::create($data);
+
+        $konsultasi->touch();
 
         return redirect()->route('konsultasi.show', $konsultasi)
             ->with('success', 'Pesan berhasil dikirim');

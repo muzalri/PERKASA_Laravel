@@ -40,30 +40,33 @@
                         {{ $konsultasi->pakar->name }}
                     </td>
                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        @if(isset($konsultasi->last_status))
-                            @php
-                                $statusClass = match($konsultasi->last_status) {
-                                    'belum_dibaca' => 'bg-red-500',
-                                    'dibaca' => 'bg-yellow-500',
-                                    'dibalas' => 'bg-green-500',
-                                    default => 'bg-gray-500'
-                                };
+                        @php
+                            $lastMessage = $konsultasi->pesans->first();
+                            $unreadCount = $konsultasi->pesans()
+                                ->where('user_id', '!=', auth()->id())
+                                ->where('status', 'belum_dibaca')
+                                ->count();
+                        @endphp
 
-                                $statusText = match(true) {
-                                    !$konsultasi->pesans->count() => 'Belum ada pesan',
-                                    $konsultasi->last_sender_id === auth()->id() => 'Pesan terkirim',
-                                    $konsultasi->last_status === 'belum_dibaca' => 'Belum dibaca',
-                                    $konsultasi->last_status === 'dibaca' => 'Sudah dibaca',
-                                    $konsultasi->last_status === 'dibalas' => 'Sudah dibalas',
-                                    default => 'Status tidak diketahui'
-                                };
-                            @endphp
-                            <span class="px-2 py-1 text-xs text-white rounded {{ $statusClass }}">
-                                {{ $statusText }}
-                            </span>
-                        @else
+                        @if(!$konsultasi->pesans->count())
                             <span class="px-2 py-1 text-xs text-white rounded bg-gray-500">
                                 Belum ada pesan
+                            </span>
+                        @elseif($lastMessage->user_id === auth()->id())
+                            <span class="status-icon">
+                                @if($lastMessage->status === 'belum_dibaca')
+                                    <i class="fa-solid fa-check-double sent-check"></i>
+                                @elseif($lastMessage->status === 'dibaca')
+                                    <i class="fa-solid fa-check-double read-check"></i>
+                                @endif
+                            </span>
+                        @elseif($unreadCount > 0)
+                            <span class="unread-count">
+                                {{ $unreadCount }}
+                            </span>
+                        @else
+                            <span class="status-icon">
+                                <i class="fa-solid fa-check-double read-check"></i>
                             </span>
                         @endif
                     </td>
@@ -80,3 +83,76 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function updateStatuses() {
+        fetch('/konsultasi/status-updates')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(konsultasi => {
+                    const statusCell = document.querySelector(`#konsultasi-${konsultasi.id}-status`);
+                    if (statusCell) {
+                        if (konsultasi.unread_count > 0) {
+                            statusCell.innerHTML = `
+                                <span class="unread-count">
+                                    ${konsultasi.unread_count}
+                                </span>
+                            `;
+                        } else if (konsultasi.last_message_status === 'dibaca') {
+                            statusCell.innerHTML = `
+                                <span class="status-icon">
+                                    <i class="fas fa-check-double read-check"></i>
+                                </span>
+                            `;
+                        } else if (konsultasi.last_message_status === 'belum_dibaca') {
+                            statusCell.innerHTML = `
+                                <span class="status-icon">
+                                    <i class="fas fa-check-double sent-check"></i>
+                                </span>
+                            `;
+                        }
+                    }
+                });
+            });
+    }
+
+    // Update status setiap 2 detik
+    setInterval(updateStatuses, 2000);
+});
+</script>
+@endpush
+
+@push('styles')
+<style>
+.status-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sent-check {
+    color: #8696a0;
+    font-size: 16px;
+}
+
+.read-check {
+    color: #53bdeb;
+    font-size: 16px;
+}
+
+.unread-count {
+    background-color: #25d366;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+</style>
+@endpush
