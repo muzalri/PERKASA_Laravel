@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -103,5 +104,35 @@ class AuthController extends Controller
                 'user' => $request->user()
             ]
         ]);
+    }
+
+    public function deleteProfile(Request $request)
+    {
+        try {
+            $user = $request->user();
+            
+            // Hapus foto profil jika ada
+            if ($user->profile_photo) {
+                Storage::disk('public')->delete($user->profile_photo);
+            }
+            
+            // Hapus semua token
+            $user->tokens()->delete();
+            
+            // Hapus user
+            $user->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile berhasil dihapus'
+            ], 200);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus profile',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 } 
