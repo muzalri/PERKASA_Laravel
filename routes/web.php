@@ -72,8 +72,6 @@ Route::get('/konsultasi', [KonsultasiController::class, 'index'])->middleware('a
 Route::resource('konsultasi', KonsultasiController::class);
 Route::post('konsultasi/{konsultasi}/pesan', [PesanController::class, 'store'])->name('pesan.store');
 
-Route::post('/upload-image', [ChatController::class, 'uploadImage'])->name('upload.image');
-
 Route::resource('guide-books', GuideBookController::class)->middleware('auth');
 
 Route::post('/pesan/{pesan}/status/{status}', [PesanController::class, 'updateStatus'])->name('pesan.updateStatus');
