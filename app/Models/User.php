@@ -23,6 +23,7 @@ class User extends Authenticatable
         'no_hp',
         'alamat',
         'role',
+        'profile_photo',
     ];
 
     /**
@@ -62,8 +63,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Komentar::class, 'user_id');
     }
-<<<<<<< Updated upstream
-=======
 
     public function konsultasisSebagaiUser()
     {
@@ -84,5 +83,4 @@ class User extends Authenticatable
     {
         return $this->role === 'pakar';
     }
->>>>>>> Stashed changes
 }

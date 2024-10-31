@@ -4,16 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\GuideBook;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class GuideBookController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('pakar')->except(['index', 'show']);
-    }
+    use AuthorizesRequests;
 
     public function index()
     {
@@ -21,9 +16,8 @@ class GuideBookController extends Controller
         return view('guide_books.index', compact('guideBooks'));
     }
 
-    public function show($id)
+    public function show(GuideBook $guideBook)
     {
-        $guideBook = GuideBook::findOrFail($id);
         return view('guide_books.show', compact('guideBook'));
     }
 
@@ -39,81 +33,58 @@ class GuideBookController extends Controller
             'content' => 'required',
             'category' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'mimetypes:video/mp4|max:20000',
+            'video' => 'mimes:mp4,mov,ogg,qt|max:20000',
         ]);
-
-        $guideBook = new GuideBook($validatedData);
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('guide_book_images', 'public');
-            $guideBook->image_path = $imagePath;
+            $validatedData['image_path'] = $imagePath;
         }
 
         if ($request->hasFile('video')) {
             $videoPath = $request->file('video')->store('guide_book_videos', 'public');
-            $guideBook->video_path = $videoPath;
+            $validatedData['video_path'] = $videoPath;
         }
 
-        $guideBook->save();
+        GuideBook::create($validatedData);
 
-        return redirect()->route('guide-books.index')->with('success', 'Panduan berhasil ditambahkan.');
+        return redirect()->route('guide-books.index')->with('success', 'Guide book berhasil dibuat.');
     }
 
-    public function edit($id)
+    public function edit(GuideBook $guideBook)
     {
-        $guideBook = GuideBook::findOrFail($id);
         return view('guide_books.edit', compact('guideBook'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, GuideBook $guideBook)
     {
-        $guideBook = GuideBook::findOrFail($id);
-
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
             'category' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'mimetypes:video/mp4|max:20000',
+            'video' => 'mimes:mp4,mov,ogg,qt|max:20000',
         ]);
 
-        $guideBook->fill($validatedData);
-
         if ($request->hasFile('image')) {
-            if ($guideBook->image_path) {
-                Storage::disk('public')->delete($guideBook->image_path);
-            }
             $imagePath = $request->file('image')->store('guide_book_images', 'public');
-            $guideBook->image_path = $imagePath;
+            $validatedData['image_path'] = $imagePath;
         }
 
         if ($request->hasFile('video')) {
-            if ($guideBook->video_path) {
-                Storage::disk('public')->delete($guideBook->video_path);
-            }
             $videoPath = $request->file('video')->store('guide_book_videos', 'public');
-            $guideBook->video_path = $videoPath;
+            $validatedData['video_path'] = $videoPath;
         }
 
-        $guideBook->save();
+        $guideBook->update($validatedData);
 
-        return redirect()->route('guide-books.show', $guideBook->id)->with('success', 'Panduan berhasil diperbarui.');
+        return redirect()->route('guide-books.index')->with('success', 'Guide book berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy(GuideBook $guideBook)
     {
-        $guideBook = GuideBook::findOrFail($id);
-
-        if ($guideBook->image_path) {
-            Storage::disk('public')->delete($guideBook->image_path);
-        }
-
-        if ($guideBook->video_path) {
-            Storage::disk('public')->delete($guideBook->video_path);
-        }
-
         $guideBook->delete();
 
-        return redirect()->route('guide-books.index')->with('success', 'Panduan berhasil dihapus.');
+        return redirect()->route('guide-books.index')->with('success', 'Guide book berhasil dihapus.');
     }
 }

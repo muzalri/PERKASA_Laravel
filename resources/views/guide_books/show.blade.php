@@ -4,17 +4,18 @@
 <div class="container">
     <h1>{{ $guideBook->title }}</h1>
     <p>Kategori: {{ $guideBook->category }}</p>
+    @if($guideBook->image_path)
+        <img src="{{ asset('storage/' . $guideBook->image_path) }}" alt="{{ $guideBook->title }}" class="img-fluid mb-3">
+    @endif
+    @if($guideBook->video_path)
+        <video width="320" height="240" controls class="mb-3">
+            <source src="{{ asset('storage/' . $guideBook->video_path) }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    @endif
     <div>
         {!! $guideBook->content !!}
     </div>
-    @if(auth()->check() && auth()->user()->isPakar())
-        <a href="{{ route('guide_books.edit', $guideBook->id) }}" class="btn btn-primary">Edit</a>
-        <form action="{{ route('guide_books.destroy', $guideBook->id) }}" method="POST" style="display: inline-block;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus panduan ini?')">Hapus</button>
-        </form>
-    @endif
-    <a href="{{ route('guide_books.index') }}">Kembali ke daftar panduan</a>
+    <a href="{{ route('guide-books.index') }}">Kembali ke daftar panduan</a>
 </div>
 @endsection

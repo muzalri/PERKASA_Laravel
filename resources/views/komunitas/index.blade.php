@@ -3,33 +3,60 @@
 @section('title', 'Daftar Komunitas')
 
 @section('content')
-<div class="article-list" style="display: flex; justify-content: space-between; align-items: center; padding-left: 50px; padding-right: 50px; margin-bottom: 20px; font-family: 'Montserrat', sans-serif">
-    <h1>Daftar Artikel</h1>
-    <a href="{{ route('komunitas.create') }}" class="underline-btn" >Buat Artikel Baru</a>
-</div>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Daftar Artikel</h1>
+    <a href="{{ route('komunitas.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">
+        Buat Artikel Baru
+    </a>
 
-@if($komunitas->count())
-    @foreach($komunitas as $item)
-        <div class="card mb-3" style="padding-left: 50px; padding-right: 50px;">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <a href="{{ route('komunitas.show', $item) }}">{{ $item->title }}</a>
-                </h5>
-                <h6 class="card-subtitle mb-2 text-muted">
-                    Kategori: {{ $item->category->name }} | Ditulis oleh: {{ $item->user->name }} | {{ $item->created_at->diffForHumans() }}
-                </h6>
-                <p class="card-text">{{ Str::limit($item->body, 150) }}</p>
-                <a href="{{ route('komunitas.show', $item) }}" class="card-link">Baca Selengkapnya</a>
-            </div>
-        </div>
-    @endforeach
+    @if($komunitas->count())
+    <div class="overflow-x-auto bg-white shadow-md rounded">
+        <table class="min-w-full leading-normal">
+            <thead>
+                <tr>
+                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Judul
+                    </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Kategori
+                    </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Penulis
+                    </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Aksi
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($komunitas as $item)
+                <tr>
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p class="text-gray-900 whitespace-no-wrap">{{ $item->title }}</p>
+                    </td>
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p class="text-gray-900 whitespace-no-wrap">{{ $item->category->name }}</p>
+                    </td>
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p class="text-gray-900 whitespace-no-wrap">{{ $item->user->name }}</p>
+                    </td>
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <a href="{{ route('komunitas.show', $item) }}" class="text-blue-600 hover:text-blue-900">Lihat</a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
     <!-- Pagination Links -->
-    {{ $komunitas->links() }}
+    <div class="mt-4">
+        {{ $komunitas->links() }}
+    </div>
     @else
-        <p style="font-size: 18px; color: red; text-align: center; margin-top: 20px;">
-            Belum ada artikel. <a href="{{ route('komunitas.create') }}">Buat artikel pertama!</a>
+        <p class="text-red-500 text-lg text-center mt-5">
+            Belum ada artikel. <a href="{{ route('komunitas.create') }}" class="text-blue-600 hover:text-blue-900">Buat artikel pertama!</a>
         </p>
     @endif
-
+</div>
 @endsection

@@ -6,7 +6,10 @@ use App\Http\Controllers\KomunitasController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\KonsulController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KonsultasiController;
+use App\Http\Controllers\PesanController;
 use App\Http\Controllers\GuideBookController;
+use App\Http\Controllers\ChatController;
 
 
 
@@ -22,12 +25,19 @@ Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect()->route('login');
+})->name('logout');
 
 // Profil Pengguna
-Route::get('/profile', [AuthController::class, 'showProfile'])->middleware('auth')->name('profile');
-Route::get('/profile/edit', [AuthController::class, 'edit'])->middleware('auth')->name('profile.edit');
-Route::post('/profile/edit', [AuthController::class, 'update'])->middleware('auth')->name('profile.update');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
+    Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/edit', [AuthController::class, 'update'])->name('profile.update');
+    Route::post('/profile/upload-photo', [AuthController::class, 'uploadPhoto'])->name('profile.upload-photo');
+    Route::delete('/profile/delete-photo', [AuthController::class, 'deletePhoto'])->name('profile.delete-photo');
+});
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
@@ -62,14 +72,13 @@ Route::get('/konsultasi', [KonsultasiController::class, 'index'])->middleware('a
 Route::resource('konsultasi', KonsultasiController::class);
 Route::post('konsultasi/{konsultasi}/pesan', [PesanController::class, 'store'])->name('pesan.store');
 
+Route::post('/upload-image', [ChatController::class, 'uploadImage'])->name('upload.image');
 
-Route::group(['middleware' => ['auth', 'pakar']], function () {
-    Route::get('/guide-books/create', [GuideBookController::class, 'create'])->name('guide_books.create');
-    Route::post('/guide-books', [GuideBookController::class, 'store'])->name('guide_books.store');
-    Route::get('/guide-books/{id}/edit', [GuideBookController::class, 'edit'])->name('guide_books.edit');
-    Route::put('/guide-books/{id}', [GuideBookController::class, 'update'])->name('guide_books.update');
-    Route::delete('/guide-books/{id}', [GuideBookController::class, 'destroy'])->name('guide_books.destroy');
-});
+Route::resource('guide-books', GuideBookController::class)->middleware('auth');
 
-Route::get('/guide-books', [GuideBookController::class, 'index'])->name('guide_books.index');
-Route::get('/guide-books/{id}', [GuideBookController::class, 'show'])->name('guide_books.show');
+Route::post('/pesan/{pesan}/status/{status}', [PesanController::class, 'updateStatus'])->name('pesan.updateStatus');
+
+Route::get('/konsultasi/{konsultasi}/messages-status', [KonsultasiController::class, 'getMessagesStatus'])
+    ->name('konsultasi.messages-status');
+
+Route::get('/konsultasi/status-updates', [KonsultasiController::class, 'getStatusUpdates']);

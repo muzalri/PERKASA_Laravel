@@ -3,67 +3,88 @@
 @section('title', 'Login')
 
 @section('content')
-
-@if ($errors->any())
-<div>
-    <ul>
-        @foreach ($errors->all() as $error)
-            <li style="color:red;">{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
-
-@if (session('success'))
-<div style="color:green;">
-    {{ session('success') }}
-</div>
-@endif
-
-
-<div class="row h-100">
-    <div class="col-lg-5 col-12">
-        <div id="auth-left">
-            <div class="auth-logo">
-                <a href="index.html"><img src="assets/images/logo/logo.png" alt="Logo"></a>
+<div class="flex h-screen bg-gray-100">
+    <!-- Bagian kiri - Gambar dan Pesan Selamat Datang -->
+    <div class="hidden lg:flex lg:w-1/2 bg-teal-600">
+        <div class="w-full flex flex-col justify-center items-center text-center">
+            <div class="text-white text-6xl font-bold">
+                Selamat<br>Datang<br>Kembali!
             </div>
-            <h1 class="auth-title">Log in.</h1>
-            <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
+        </div>
+    </div>
+    
+    <!-- Bagian kanan - Form Login -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center">
+        <div class="max-w-md w-full space-y-8 p-10 bg-sky-50 rounded-xl shadow-lg">
+            <div class="text-center">
+                <h2 class="mt-6 text-3xl font-bold text-gray-900">
+                    Login
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    Masukkan detail Anda untuk masuk ke akun Anda
+                </p>
+            </div>
 
-            <form action="{{route('login')}}" method="POST">
+            @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            @if (session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                {{ session('success') }}
+            </div>
+            @endif
+
+            <form class="mt-8 space-y-6" action="{{ route('login') }}" method="POST">
                 @csrf
-                <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="email" class="form-control form-control-xl" placeholder="Email" name="email" value="{{ old('email') }}" required autofocus>
-                    <div class="form-control-icon">
-                        <i class="bi bi-envelope"></i>
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="email" class="sr-only">Email</label>
+                        <input id="email" name="email" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-teal-500 focus:border-teal-500 focus:z-10 sm:text-sm" placeholder="Email" value="{{ old('email') }}">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-teal-500 focus:border-teal-500 focus:z-10 sm:text-sm" placeholder="Password">
                     </div>
                 </div>
-                <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="password" class="form-control form-control-xl" placeholder="Password" name="password">
-                    <div class="form-control-icon">
-                        <i class="bi bi-shield-lock"></i>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember_me" name="remember" type="checkbox" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                        <label for="remember_me" class="ml-2 block text-sm text-gray-900">
+                            Ingat saya
+                        </label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="auth-forgot-password.html" class="font-medium text-teal-600 hover:text-teal-500">
+                            Lupa password?
+                        </a>
                     </div>
                 </div>
-                <div class="form-check form-check-lg d-flex align-items-end">
-                    <input class="form-check-input me-2" type="checkbox" name="remember" id="flexCheckDefault">
-                    <label class="form-check-label text-gray-600" for="flexCheckDefault">
-                        Keep me logged in
-                    </label>
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                        Login
+                    </button>
                 </div>
-                <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
             </form>
-            <div class="text-center mt-5 text-lg fs-4">
-                <p class="text-gray-600">Don't have an account? <a href="{{ route('register') }}" class="font-bold">Sign
-                        up</a>.</p>
-                <p><a class="font-bold" href="auth-forgot-password.html">Forgot password?</a>.</p>
+
+            <div class="text-center">
+                <p class="mt-2 text-sm text-gray-600">
+                    Belum punya akun?
+                    <a href="{{ route('register') }}" class="font-medium text-teal-600 hover:text-teal-500">
+                        Daftar
+                    </a>
+                </p>
             </div>
         </div>
     </div>
-    <div class="col-lg-7 d-none d-lg-block">
-        <div id="auth-right">
-
-        </div>
-    </div>
 </div>
-
-@endSection
+@endsection
