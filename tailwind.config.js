@@ -1,16 +1,16 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
     "./resources/**/*.vue",
   ],
   theme: {
-    extend:  {
+    extend: {
       colors: {
-        'perkasa-blue': '#7A99A8'
-      }
+        'perkasa-blue': '#7A99A8',
+      },
     },
   },
   plugins: [],
-}
+};
