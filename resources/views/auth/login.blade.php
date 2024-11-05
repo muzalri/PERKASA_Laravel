@@ -5,7 +5,7 @@
 @section('content')
 <div class="flex h-screen bg-gray-100">
     <!-- Bagian kiri - Gambar dan Pesan Selamat Datang -->
-    <div class="hidden lg:flex lg:w-1/2 bg-teal-600">
+    <div class="bg-perkasa-blue hidden lg:flex lg:w-1/2">
         <div class="w-full flex flex-col justify-center items-center text-center">
             <div class="text-white text-6xl font-bold">
                 Selamat<br>Datang<br>Kembali!
@@ -70,7 +70,7 @@
                 </div>
 
                 <div>
-                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-perkasa-blue hover:bg-perkasa-blue/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
                         Login
                     </button>
                 </div>

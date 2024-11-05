@@ -11,7 +11,8 @@ class MarketplaceController extends Controller
      */
     public function index()
     {
-        return view('marketplace');
+        $products = []; // atau Product::all() jika sudah ada model
+        return view('marketplace.index', compact('products'));
     }
 
     /**
@@ -19,7 +20,7 @@ class MarketplaceController extends Controller
      */
     public function create()
     {
-        //
+        return view('marketplace.create');
     }
 
     /**

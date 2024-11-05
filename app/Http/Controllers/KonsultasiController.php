@@ -26,7 +26,8 @@ class KonsultasiController extends Controller
                 $query->where('user_id', '!=', auth()->id())
                       ->where('status', 'belum_dibaca');
             }])
-            ->get();
+            ->latest()
+            ->paginate(10);
         } else {
             $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
                 $query->latest();
@@ -37,13 +38,9 @@ class KonsultasiController extends Controller
                 $query->where('user_id', '!=', auth()->id())
                       ->where('status', 'belum_dibaca');
             }])
-            ->get();
+            ->latest()
+            ->paginate(10);
         }
-
-        // Sort konsultasis berdasarkan pesan terakhir
-        $konsultasis = $konsultasis->sortByDesc(function($konsultasi) {
-            return $konsultasi->pesans->first()?->created_at ?? $konsultasi->created_at;
-        });
 
         return view('konsultasi.index', compact('konsultasis'));
     }

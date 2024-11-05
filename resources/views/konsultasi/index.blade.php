@@ -1,164 +1,106 @@
 @extends('layout.master')
 
-@section('content')
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Daftar Konsultasi</h1>
-    <a href="{{ route('konsultasi.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">
-        Buat Konsultasi Baru
-    </a>
-    <div class="overflow-x-auto bg-white shadow-md rounded">
-        <table class="min-w-full leading-normal">
-            <thead>
-                <tr>
-                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Judul
-                    </th>
-                    @if(auth()->user()->role === 'pakar')
-                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Pengguna
-                    </th>
-                    @else
-                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Pakar
-                    </th>
-                    @endif
-                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Status
-                    </th>
-                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Aksi
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($konsultasis as $konsultasi)
-                <tr>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        {{ $konsultasi->judul }}
-                    </td>
-                    @if(auth()->user()->role === 'pakar')
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        {{ $konsultasi->user->name }}
-                    </td>
-                    @else
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        {{ $konsultasi->pakar->name }}
-                    </td>
-                    @endif
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        @php
-                            $lastMessage = $konsultasi->pesans->first();
-                            $unreadCount = $konsultasi->pesans()
-                                ->where('user_id', '!=', auth()->id())
-                                ->where('status', 'belum_dibaca')
-                                ->count();
-                        @endphp
+@section('title', 'Daftar Konsultasi')
 
-                        @if(!$konsultasi->pesans->count())
-                            <span class="px-2 py-1 text-xs text-white rounded bg-gray-500">
-                                Belum ada pesan
-                            </span>
-                        @elseif($lastMessage->user_id === auth()->id())
-                            <span class="status-icon">
-                                @if($lastMessage->status === 'belum_dibaca')
-                                    <i class="fa-solid fa-check-double sent-check"></i>
-                                @elseif($lastMessage->status === 'dibaca')
-                                    <i class="fa-solid fa-check-double read-check"></i>
-                                @endif
-                            </span>
-                        @elseif($unreadCount > 0)
-                            <span class="unread-count">
-                                {{ $unreadCount }}
-                            </span>
-                        @else
-                            <span class="status-icon">
-                                <i class="fa-solid fa-check-double read-check"></i>
-                            </span>
-                        @endif
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <a href="{{ route('konsultasi.show', $konsultasi) }}" 
-                           class="text-blue-600 hover:text-blue-900">
-                            Lihat
-                        </a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+@section('content')
+<div class="min-h-screen bg-gray-50">
+    <!-- Header dengan gradasi -->
+    <div class="bg-gradient-to-r from-perkasa-blue to-sky-600 py-8 mt-6 rounded-lg mx-4">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-serif font-bold text-white mb-2">Daftar Konsultasi</h1>
+            <p class="text-sky-100">Konsultasikan masalah budidaya ikan Anda dengan para pakar</p>
+        </div>
+    </div>
+
+    <!-- Garis Pemisah -->
+    <div class="border-b border-gray-200"></div>
+
+    <!-- Konten Utama -->
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Tombol Buat Konsultasi -->
+        <div class="mb-8">
+            <a href="{{ route('konsultasi.create') }}" 
+               class="inline-flex items-center px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg
+                      transform transition duration-200 hover:bg-blue-600 hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-plus-circle mr-2"></i>
+                Buat Konsultasi Baru
+            </a>
+        </div>
+
+        @if($konsultasis->count())
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                Judul
+                            </th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                Pakar
+                            </th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                Tanggal
+                            </th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                                Aksi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @foreach($konsultasis as $konsultasi)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="text-gray-900 font-medium">{{ $konsultasi->judul }}</p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {{ $konsultasi->status === 'selesai' ? 'bg-green-100 text-green-800' : 
+                                       ($konsultasi->status === 'berlangsung' ? 'bg-blue-100 text-blue-800' : 
+                                       'bg-yellow-100 text-yellow-800') }}">
+                                    {{ ucfirst($konsultasi->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <img class="h-8 w-8 rounded-full mr-3" 
+                                         src="{{ asset('assets/images/faces/' . rand(1,8) . '.jpg') }}" 
+                                         alt="{{ $konsultasi->pakar->name }}">
+                                    <p class="text-sm text-gray-900">{{ $konsultasi->pakar->name }}</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $konsultasi->created_at->format('d M Y') }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="{{ route('konsultasi.show', $konsultasi) }}" 
+                                   class="text-blue-600 hover:text-blue-900 font-medium transition-colors">
+                                    <i class="fas fa-comments mr-1"></i> Chat
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination dengan styling -->
+            <div class="mt-6">
+                {{ $konsultasis->links() }}
+            </div>
+        @else
+            <div class="text-center py-12 bg-white rounded-xl shadow-sm">
+                <i class="fas fa-comments text-gray-400 text-5xl mb-4"></i>
+                <p class="text-gray-500 text-lg mb-4">Belum ada konsultasi.</p>
+                <a href="{{ route('konsultasi.create') }}" 
+                   class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors">
+                    Buat konsultasi pertama! <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        @endif
     </div>
 </div>
 @endsection
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    function updateStatuses() {
-        fetch('/konsultasi/status-updates')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(konsultasi => {
-                    const statusCell = document.querySelector(`#konsultasi-${konsultasi.id}-status`);
-                    if (statusCell) {
-                        if (konsultasi.unread_count > 0) {
-                            statusCell.innerHTML = `
-                                <span class="unread-count">
-                                    ${konsultasi.unread_count}
-                                </span>
-                            `;
-                        } else if (konsultasi.last_message_status === 'dibaca') {
-                            statusCell.innerHTML = `
-                                <span class="status-icon">
-                                    <i class="fas fa-check-double read-check"></i>
-                                </span>
-                            `;
-                        } else if (konsultasi.last_message_status === 'belum_dibaca') {
-                            statusCell.innerHTML = `
-                                <span class="status-icon">
-                                    <i class="fas fa-check-double sent-check"></i>
-                                </span>
-                            `;
-                        }
-                    }
-                });
-            });
-    }
-
-    // Update status setiap 2 detik
-    setInterval(updateStatuses, 2000);
-});
-</script>
-@endpush
-
-@push('styles')
-<style>
-.status-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sent-check {
-    color: #8696a0;
-    font-size: 16px;
-}
-
-.read-check {
-    color: #53bdeb;
-    font-size: 16px;
-}
-
-.unread-count {
-    background-color: #25d366;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-}
-</style>
-@endpush
