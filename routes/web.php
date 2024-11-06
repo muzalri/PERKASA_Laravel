@@ -80,3 +80,7 @@ Route::get('/konsultasi/{konsultasi}/messages-status', [KonsultasiController::cl
     ->name('konsultasi.messages-status');
 
 Route::get('/konsultasi/status-updates', [KonsultasiController::class, 'getStatusUpdates']);
+
+Route::delete('/konsultasi/{konsultasi}', [KonsultasiController::class, 'destroy'])
+    ->name('konsultasi.destroy')
+    ->middleware('auth');
