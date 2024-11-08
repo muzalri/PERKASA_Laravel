@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Konsultasi;
 use App\Models\User;
 use App\Models\PesanKonsultasi;
+use App\Models\Pesan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class KonsultasiController extends Controller
 {
@@ -72,24 +72,19 @@ class KonsultasiController extends Controller
      */
     public function show(Konsultasi $konsultasi)
     {
-        $user = auth()->user();
-        
-        // Cek apakah konsultasi masih aktif untuk pengguna yang melihat
-        if ($user->role === 'pakar' && $konsultasi->status_pakar === 'deleted') {
-            return redirect()->route('konsultasi.index')
-                ->with('error', 'Konsultasi tidak ditemukan.');
+        if (auth()->user()->id === $konsultasi->pakar_id) {
+            $konsultasi->pesans()
+                ->where('user_id', '!=', auth()->id())
+                ->where('status', 'belum_dibaca')
+                ->update(['status' => 'dibaca']);
         }
         
-        if ($user->role !== 'pakar' && $konsultasi->status_user === 'deleted') {
-            return redirect()->route('konsultasi.index')
-                ->with('error', 'Konsultasi tidak ditemukan.');
+        else if (auth()->user()->id === $konsultasi->user_id) {
+            $konsultasi->pesans()
+                ->where('user_id', '!=', auth()->id())
+                ->where('status', 'belum_dibaca')
+                ->update(['status' => 'dibaca']);
         }
-
-        // Update status pesan menjadi dibaca
-        $konsultasi->pesans()
-            ->where('user_id', '!=', $user->id)
-            ->where('status', 'belum_dibaca')
-            ->update(['status' => 'dibaca']);
 
         $konsultasi->load(['pesans.user', 'user', 'pakar']);
         return view('konsultasi.show', compact('konsultasi'));
@@ -117,6 +112,15 @@ class KonsultasiController extends Controller
             }
             // Update status hanya untuk user
             $konsultasi->update(['status_user' => 'deleted']);
+        }
+
+        // Cek apakah kedua status sudah dihapus
+        if ($konsultasi->status_user === 'deleted' && $konsultasi->status_pakar === 'deleted') {
+            // Hapus semua pesan terkait
+            Pesan::where('konsultasi_id', $konsultasi->id)->delete(); // Hapus pesan terkait
+            $konsultasi->forceDelete(); // Hapus konsultasi dari database
+            return redirect()->route('konsultasi.index')
+                ->with('success', 'Konsultasi dan semua pesan terkait berhasil dihapus dari database.');
         }
 
         return redirect()->route('konsultasi.index')

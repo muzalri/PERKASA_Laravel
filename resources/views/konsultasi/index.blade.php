@@ -16,20 +16,11 @@
             <div class="flex justify-between items-start">
                 <a href="{{ route('konsultasi.show', $konsultasi) }}" class="block flex-1">
                     <div class="flex items-center space-x-4">
-                        <!-- Profile Picture -->
                         <div class="flex-shrink-0">
-                            @if(auth()->user()->role === 'pakar')
-                                <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-500 text-lg">{{ substr($konsultasi->user->name, 0, 1) }}</span>
-                                </div>
-                            @else
-                                <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-500 text-lg">{{ substr($konsultasi->pakar->name, 0, 1) }}</span>
-                                </div>
-                            @endif
+                            <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
+                                <span class="text-gray-500 text-lg">{{ auth()->user()->role === 'pakar' ? substr($konsultasi->user->name, 0, 1) : substr($konsultasi->pakar->name, 0, 1) }}</span>
+                            </div>
                         </div>
-
-                        <!-- Content -->
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -44,13 +35,16 @@
                                     @endif
                                 </span>
                             </div>
-                            
                             @if($konsultasi->pesans->count() > 0)
                                 <p class="text-sm text-gray-500 truncate mt-1">
                                     {{ $konsultasi->pesans->first()->isi }}
                                     @if($konsultasi->unread_count > 0)
                                         <span class="inline-flex items-center justify-center h-5 w-5 rounded-full bg-blue-500 text-white text-xs ml-2">
                                             {{ $konsultasi->unread_count }}
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center justify-center h-5 w-5 rounded-full bg-green-500 text-white text-xs ml-2">
+                                            <i class="fas fa-check"></i>
                                         </span>
                                     @endif
                                 </p>
@@ -60,7 +54,6 @@
                         </div>
                     </div>
                 </a>
-                
                 <!-- Tombol Delete -->
                 <div class="ml-4">
                     <form action="{{ route('konsultasi.destroy', $konsultasi) }}" 
@@ -69,8 +62,7 @@
                           onsubmit="return confirm('Apakah Anda yakin ingin menghapus konsultasi ini dari daftar Anda?')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" 
-                                class="text-red-500 hover:text-red-700 transition duration-200">
+                        <button type="submit" class="text-red-500 hover:text-red-700 transition duration-200">
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>

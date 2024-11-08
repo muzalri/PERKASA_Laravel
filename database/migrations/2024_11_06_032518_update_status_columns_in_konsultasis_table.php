@@ -33,8 +33,6 @@ return new class extends Migration
     {
         Schema::table('konsultasis', function (Blueprint $table) {
             $table->dropColumn(['status_user', 'status_pakar']);
-            $table->boolean('deleted_by_user')->default(false);
-            $table->boolean('deleted_by_pakar')->default(false);
         });
     }
 };
