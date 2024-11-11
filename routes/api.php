@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\KomunitasController;
 use App\Http\Controllers\Api\KonsultasiController;
 use App\Http\Controllers\Api\GuideBookController;
+use App\Http\Controllers\Api\PesanController;
 
 // Auth Routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -34,8 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/konsultasi', [KonsultasiController::class, 'index']);
     Route::post('/konsultasi', [KonsultasiController::class, 'store']);
     Route::get('/konsultasi/{konsultasi}', [KonsultasiController::class, 'show']);
-    Route::post('/konsultasi/{konsultasi}/pesan', [KonsultasiController::class, 'storePesan']);
-    Route::put('/pesan/{pesan}/status/{status}', [KonsultasiController::class, 'updateStatus']);
+    Route::post('/konsultasi/{konsultasi}/pesan', [PesanController::class, 'store']);
+    Route::put('/pesan/{pesan}/status/{status}', [PesanController::class, 'updateStatus']);
     Route::get('/konsultasi/{konsultasi}/messages-status', [KonsultasiController::class, 'getMessagesStatus']);
 
     // Guide Book

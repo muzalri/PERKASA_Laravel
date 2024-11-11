@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Konsultasi;
-use App\Models\Pesan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +11,16 @@ class KonsultasiController extends Controller
 {
     public function index()
     {
-        $konsultasi = Konsultasi::with(['user', 'pesan'])->latest()->paginate(10);
+        $konsultasi = Konsultasi::with(['user', 'pakar', 'pesans'])->latest()->paginate(10);
+        return response()->json([
+            'success' => true,
+            'data' => $konsultasi
+        ]);
+    }
+
+    public function show(Konsultasi $konsultasi)
+    {
+        $konsultasi->load(['user', 'pakar', 'pesans.user']);
         return response()->json([
             'success' => true,
             'data' => $konsultasi
@@ -38,15 +46,6 @@ class KonsultasiController extends Controller
             'message' => 'Konsultasi berhasil dibuat',
             'data' => $konsultasi
         ], 201);
-    }
-
-    public function show(Konsultasi $konsultasi)
-    {
-        $konsultasi->load(['user', 'pesan.user']);
-        return response()->json([
-            'success' => true,
-            'data' => $konsultasi
-        ]);
     }
 
     public function storePesan(Request $request, Konsultasi $konsultasi)
