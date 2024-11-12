@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\PesanController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+
+
 Route::middleware('auth:sanctum')->group(function () {
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -21,14 +23,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile/photo', [AuthController::class, 'uploadPhoto']);
     Route::delete('/profile/photo', [AuthController::class, 'deletePhoto']);
 
+  
+
     // Komunitas
     Route::get('/komunitas', [KomunitasController::class, 'index']);
     Route::post('/komunitas', [KomunitasController::class, 'store']);
+    Route::get('/komunitas/categories', [KomunitasController::class, 'getCategories']);
     Route::get('/komunitas/{komunitas}', [KomunitasController::class, 'show']);
-    Route::put('/komunitas/{komunitas}', [KomunitasController::class, 'update']);
-    Route::delete('/komunitas/{komunitas}', [KomunitasController::class, 'destroy']);
     Route::post('/komunitas/{komunitas}/like', [KomunitasController::class, 'toggleLike']);
-    Route::post('/komunitas/{komunitas}/komentar', [KomunitasController::class, 'storeKomentar']);
+    Route::post('/komunitas/{komunitas}/komentar', [KomunitasController::class, 'komentarStore']);
     Route::delete('/komentar/{komentar}', [KomunitasController::class, 'destroyKomentar']);
 
     // Konsultasi

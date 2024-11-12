@@ -9,7 +9,7 @@ class Komunitas extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'komunitas_category_id', 'title', 'body'];
+    protected $fillable = ['user_id', 'komunitas_category_id', 'title', 'body', 'image'];
 
     public function user()
     {
