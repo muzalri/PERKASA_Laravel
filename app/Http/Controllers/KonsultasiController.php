@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Konsultasi;
 use App\Models\User;
 use App\Models\PesanKonsultasi;
+use App\Models\Pesan;
 use Illuminate\Http\Request;
 
 class KonsultasiController extends Controller
@@ -16,34 +17,24 @@ class KonsultasiController extends Controller
     {
         $user = auth()->user();
         
-        if ($user->role === 'pakar') {
-            $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
-                $query->latest();
-            }])
-            ->where('pakar_id', $user->id)
-            ->withLastMessageTime()
-            ->withCount(['pesans as unread_count' => function($query) {
-                $query->where('user_id', '!=', auth()->id())
-                      ->where('status', 'belum_dibaca');
-            }])
-            ->get();
-        } else {
-            $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
-                $query->latest();
-            }])
-            ->where('user_id', $user->id)
-            ->withLastMessageTime()
-            ->withCount(['pesans as unread_count' => function($query) {
-                $query->where('user_id', '!=', auth()->id())
-                      ->where('status', 'belum_dibaca');
-            }])
-            ->get();
-        }
-
-        // Sort konsultasis berdasarkan pesan terakhir
-        $konsultasis = $konsultasis->sortByDesc(function($konsultasi) {
-            return $konsultasi->pesans->first()?->created_at ?? $konsultasi->created_at;
-        });
+        $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
+            $query->latest();
+        }])
+        ->where(function($query) use ($user) {
+            if ($user->role === 'pakar') {
+                $query->where('pakar_id', $user->id)
+                      ->where('status_pakar', 'active');
+            } else {
+                $query->where('user_id', $user->id)
+                      ->where('status_user', 'active');
+            }
+        })
+        ->withCount(['pesans as unread_count' => function($query) use ($user) {
+            $query->where('user_id', '!=', $user->id)
+                  ->where('status', 'belum_dibaca');
+        }])
+        ->latest()
+        ->get();
 
         return view('konsultasi.index', compact('konsultasis'));
     }
@@ -104,8 +95,36 @@ class KonsultasiController extends Controller
      */
     public function destroy(Konsultasi $konsultasi)
     {
-        $konsultasi->delete();
-        return redirect()->route('konsultasi.index');
+        $user = auth()->user();
+        
+        // Verifikasi akses
+        if ($user->role === 'pakar') {
+            if ($konsultasi->pakar_id !== $user->id) {
+                return redirect()->route('konsultasi.index')
+                    ->with('error', 'Anda tidak memiliki akses untuk menghapus konsultasi ini.');
+            }
+            // Update status hanya untuk pakar
+            $konsultasi->update(['status_pakar' => 'deleted']);
+        } else {
+            if ($konsultasi->user_id !== $user->id) {
+                return redirect()->route('konsultasi.index')
+                    ->with('error', 'Anda tidak memiliki akses untuk menghapus konsultasi ini.');
+            }
+            // Update status hanya untuk user
+            $konsultasi->update(['status_user' => 'deleted']);
+        }
+
+        // Cek apakah kedua status sudah dihapus
+        if ($konsultasi->status_user === 'deleted' && $konsultasi->status_pakar === 'deleted') {
+            // Hapus semua pesan terkait
+            Pesan::where('konsultasi_id', $konsultasi->id)->delete(); // Hapus pesan terkait
+            $konsultasi->forceDelete(); // Hapus konsultasi dari database
+            return redirect()->route('konsultasi.index')
+                ->with('success', 'Konsultasi dan semua pesan terkait berhasil dihapus dari database.');
+        }
+
+        return redirect()->route('konsultasi.index')
+            ->with('success', 'Konsultasi berhasil dihapus dari daftar Anda.');
     }
 
     public function kirimPesan(Request $request, $id)
