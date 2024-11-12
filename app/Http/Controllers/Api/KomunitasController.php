@@ -1,17 +1,17 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Komunitas;
 use App\Models\KomunitasCategory;
 use App\Models\KomunitasLike;
 use App\Models\Komentar;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class KomunitasController extends Controller
 {
+    // Menampilkan daftar komunitas
     public function index()
     {
         $komunitas = Komunitas::with(['user', 'category'])->latest()->paginate(10);
@@ -21,19 +21,50 @@ class KomunitasController extends Controller
         ]);
     }
 
+    // Menampilkan detail komunitas
+    public function show(Komunitas $komunitas)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'title' => $komunitas->title,
+                'body' => $komunitas->body,
+                'image' => asset('storage/' . $komunitas->image), // Menghasilkan URL gambar
+            ]
+        ]);
+    }
+
+    // Mengambil semua kategori
+    public function getCategories()
+    {
+        $categories = KomunitasCategory::all();
+        return response()->json([
+            'success' => true,
+            'data' => $categories
+        ]);
+    }
+
+    // Menyimpan artikel baru
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|max:255',
             'komunitas_category_id' => 'required|exists:komunitas_categories,id',
             'body' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public'); // Menyimpan gambar di storage/app/public/images
+        }
 
         $komunitas = Komunitas::create([
             'user_id' => Auth::id(),
-            'komunitas_category_id' => $request->komunitas_category_id,
             'title' => $request->title,
+            'komunitas_category_id' => $request->komunitas_category_id,
             'body' => $request->body,
+            'image' => $imagePath, // Simpan path gambar di database
         ]);
 
         return response()->json([
@@ -43,60 +74,7 @@ class KomunitasController extends Controller
         ], 201);
     }
 
-    public function show(Komunitas $komunitas)
-    {
-        $komunitas->load(['user', 'category', 'likes']);
-        return response()->json([
-            'success' => true,
-            'data' => $komunitas
-        ]);
-    }
-
-    public function update(Request $request, Komunitas $komunitas)
-    {
-        if ($komunitas->user_id !== Auth::id()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 403);
-        }
-
-        $request->validate([
-            'title' => 'required|max:255',
-            'komunitas_category_id' => 'required|exists:komunitas_categories,id',
-            'body' => 'required',
-        ]);
-
-        $komunitas->update([
-            'komunitas_category_id' => $request->komunitas_category_id,
-            'title' => $request->title,
-            'body' => $request->body,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Artikel berhasil diupdate',
-            'data' => $komunitas
-        ]);
-    }
-
-    public function destroy(Komunitas $komunitas)
-    {
-        if ($komunitas->user_id !== Auth::id()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 403);
-        }
-
-        $komunitas->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Artikel berhasil dihapus'
-        ]);
-    }
-
+    // Menangani like atau dislike
     public function toggleLike(Request $request, Komunitas $komunitas)
     {
         $request->validate([
@@ -115,14 +93,13 @@ class KomunitasController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'likes_count' => $komunitas->likesCount(),
-                'dislikes_count' => $komunitas->dislikesCount(),
-            ]
+            'likes_count' => $komunitas->likesCount(),
+            'dislikes_count' => $komunitas->dislikesCount(),
         ]);
     }
 
-    public function storeKomentar(Request $request, Komunitas $komunitas)
+    // Menyimpan komentar baru
+    public function komentarStore(Request $request, Komunitas $komunitas)
     {
         $request->validate([
             'body' => 'required|string|max:1000',
@@ -140,10 +117,10 @@ class KomunitasController extends Controller
         ], 201);
     }
 
+    // Menghapus komentar
     public function destroyKomentar(Komentar $komentar)
     {
         $this->authorize('delete', $komentar);
-        
         $komentar->delete();
 
         return response()->json([
@@ -151,4 +128,15 @@ class KomunitasController extends Controller
             'message' => 'Komentar berhasil dihapus'
         ]);
     }
-} 
+
+    public function destroy(Komunitas $komunitas)
+    {
+        // Pastikan hanya pemilik yang bisa menghapus
+        if ($komunitas->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $komunitas->delete();
+        return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus']);
+    }
+}
