@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\KomunitasController;
 use App\Http\Controllers\Api\KonsultasiController;
 use App\Http\Controllers\Api\GuideBookController;
 use App\Http\Controllers\Api\PesanController;
+use App\Http\Controllers\Api\AdminController;
 
 // Auth Routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -48,4 +49,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/guide-books/{guideBook}', [GuideBookController::class, 'show']);
     Route::put('/guide-books/{guideBook}', [GuideBookController::class, 'update']);
     Route::delete('/guide-books/{guideBook}', [GuideBookController::class, 'destroy']);
+});
+
+
+Route::post('/admin/login', [AdminController::class, 'login']);
+// Admin API Routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/admin/categories', [AdminController::class, 'index']);
+    Route::post('/admin/categories', [AdminController::class, 'createCategory']);
+    Route::delete('/admin/categories/{id}', [AdminController::class, 'deleteCategory']);
+    Route::delete('/admin/articles/{komunitas}', [AdminController::class, 'deleteArticle']);
 });
