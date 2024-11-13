@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GuideBook;
+use App\Models\KomunitasCategory;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -23,7 +24,9 @@ class GuideBookController extends Controller
 
     public function create()
     {
-        return view('guide_books.create');
+        $categories = KomunitasCategory::all();
+        dd($categories);
+        return view('guide_books.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -31,9 +34,9 @@ class GuideBookController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
-            'category' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'mimes:mp4,mov,ogg,qt|max:20000',
+            'category_id' => 'required|exists:komunitas_categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
         ]);
 
         if ($request->hasFile('image')) {
@@ -46,9 +49,13 @@ class GuideBookController extends Controller
             $validatedData['video_path'] = $videoPath;
         }
 
-        GuideBook::create($validatedData);
+        $guideBook = GuideBook::create($validatedData);
 
-        return redirect()->route('guide-books.index')->with('success', 'Guide book berhasil dibuat.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Guide book berhasil dibuat',
+            'data' => $guideBook
+        ], 201);
     }
 
     public function edit(GuideBook $guideBook)
@@ -61,7 +68,7 @@ class GuideBookController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
-            'category' => 'required',
+            'category_id' => 'required|exists:komunitas_categories,id',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'video' => 'mimes:mp4,mov,ogg,qt|max:20000',
         ]);

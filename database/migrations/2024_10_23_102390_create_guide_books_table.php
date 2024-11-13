@@ -12,7 +12,7 @@ class CreateGuideBooksTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
-            $table->string('category');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

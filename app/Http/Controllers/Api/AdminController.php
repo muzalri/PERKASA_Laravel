@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin; // Pastikan model Admin di-import
 use App\Models\KomunitasCategory; // Import model KomunitasCategory
 use App\Models\Komunitas; // Import model Komunitas
+use App\Models\GuideBook; // Import model GuideBook
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -107,5 +109,103 @@ class AdminController extends Controller
     {
         $komunitas->delete();
         return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus']);
+    }
+
+    public function indexGuideBooks()
+    {
+        $guideBooks = GuideBook::latest()->paginate(10);
+        return response()->json([
+            'success' => true,
+            'data' => $guideBooks
+        ]);
+    }
+
+    public function storeGuideBook(Request $request)
+    {
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+            'category_id' =>'required|exists:komunitas_categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('guide_book_images', 'public');
+            $validatedData['image_path'] = $imagePath;
+        }
+
+        if ($request->hasFile('video')) {
+            $videoPath = $request->file('video')->store('guide_book_videos', 'public');
+            $validatedData['video_path'] = $videoPath;
+        }
+
+        $guideBook = GuideBook::create($validatedData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Guide book berhasil dibuat',
+            'data' => $guideBook
+        ], 201);
+    }
+
+    public function showGuideBook(GuideBook $guideBook)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $guideBook
+        ]);
+    }
+
+    public function updateGuideBook(Request $request, GuideBook $guideBook)
+    {
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+            'category' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($guideBook->image_path) {
+                Storage::disk('public')->delete($guideBook->image_path);
+            }
+            $imagePath = $request->file('image')->store('guide_book_images', 'public');
+            $validatedData['image_path'] = $imagePath;
+        }
+
+        if ($request->hasFile('video')) {
+            if ($guideBook->video_path) {
+                Storage::disk('public')->delete($guideBook->video_path);
+            }
+            $videoPath = $request->file('video')->store('guide_book_videos', 'public');
+            $validatedData['video_path'] = $videoPath;
+        }
+
+        $guideBook->update($validatedData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Guide book berhasil diupdate',
+            'data' => $guideBook
+        ]);
+    }
+
+    public function destroyGuideBook(GuideBook $guideBook)
+    {
+        if ($guideBook->image_path) {
+            Storage::disk('public')->delete($guideBook->image_path);
+        }
+        if ($guideBook->video_path) {
+            Storage::disk('public')->delete($guideBook->video_path);
+        }
+
+        $guideBook->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Guide book berhasil dihapus'
+        ]);
     }
 }
