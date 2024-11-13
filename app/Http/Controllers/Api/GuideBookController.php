@@ -7,6 +7,7 @@ use App\Models\GuideBook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\KomunitasCategory;
 
 class GuideBookController extends Controller
 {
@@ -24,7 +25,7 @@ class GuideBookController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
-            'category' => 'required',
+            'category_id' => 'required|exists:komunitas_categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
         ]);
@@ -70,7 +71,7 @@ class GuideBookController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
-            'category' => 'required',
+            'category_id' => 'required|exists:komunitas_categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
         ]);
@@ -122,5 +123,17 @@ class GuideBookController extends Controller
             'success' => true,
             'message' => 'Guide book berhasil dihapus'
         ]);
+    }
+
+    public function create()
+    {
+        $categories = KomunitasCategory::all(); // Ambil semua kategori
+        return view('guide_books.create', compact('categories'));
+    }
+
+    public function edit(GuideBook $guideBook)
+    {
+        $categories = KomunitasCategory::all(); // Ambil semua kategori
+        return view('guide_books.edit', compact('guideBook', 'categories'));
     }
 } 

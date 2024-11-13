@@ -11,8 +11,15 @@
             <input type="text" class="form-control" id="title" name="title" value="{{ $guideBook->title }}" required>
         </div>
         <div class="form-group">
-            <label for="category">Kategori</label>
-            <input type="text" class="form-control" id="category" name="category" value="{{ $guideBook->category }}" required>
+            <label for="category_id">Kategori</label>
+            <select class="form-select" id="category_id" name="category_id" required>
+                <option value="">Pilih Kategori</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}" {{ (old('category_id', $guideBook->category_id) == $category->id) ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
         </div>
         <div class="form-group">
             <label for="content">Konten</label>

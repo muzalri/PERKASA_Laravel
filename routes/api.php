@@ -59,4 +59,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/categories', [AdminController::class, 'createCategory']);
     Route::delete('/admin/categories/{id}', [AdminController::class, 'deleteCategory']);
     Route::delete('/admin/articles/{komunitas}', [AdminController::class, 'deleteArticle']);
+    // Admin API Routes for GuideBooks
+    Route::get('/admin/guide-books', [AdminController::class, 'indexGuideBooks']);
+    Route::post('/admin/guide-books', [AdminController::class, 'storeGuideBook']);
+    Route::get('/admin/guide-books/{guideBook}', [AdminController::class, 'showGuideBook']);
+    Route::put('/admin/guide-books/{guideBook}', [AdminController::class, 'updateGuideBook']);
+    Route::delete('/admin/guide-books/{guideBook}', [AdminController::class, 'destroyGuideBook']);
 });
