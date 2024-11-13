@@ -9,9 +9,15 @@ class GuideBook extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content', 'category_id', 'image_path', 'video_path'];
+    protected $fillable = [
+        'title',
+        'content',
+        'category_id',
+        'image_path',
+        'video_path'
+    ];
 
-    public function category()
+    public function category_id()
     {
         return $this->belongsTo(KomunitasCategory::class, 'category_id');
     }

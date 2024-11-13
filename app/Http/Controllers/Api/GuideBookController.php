@@ -13,7 +13,7 @@ class GuideBookController extends Controller
 {
     public function index()
     {
-        $guideBooks = GuideBook::latest()->paginate(10);
+        $guideBooks = GuideBook::with('category_id')->latest()->paginate(10);
         return response()->json([
             'success' => true,
             'data' => $guideBooks
@@ -29,8 +29,6 @@ class GuideBookController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
         ]);
-
-        $validatedData['user_id'] = Auth::id();
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('guide_book_images', 'public');
