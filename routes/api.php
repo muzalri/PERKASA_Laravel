@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\KonsultasiController;
 use App\Http\Controllers\Api\GuideBookController;
 use App\Http\Controllers\Api\PesanController;
 use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\RoleChangeRequestController;
 
 // Auth Routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -24,8 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile/photo', [AuthController::class, 'uploadPhoto']);
     Route::delete('/profile/photo', [AuthController::class, 'deletePhoto']);
 
-  
-
     // Komunitas
     Route::get('/komunitas', [KomunitasController::class, 'index']);
     Route::post('/komunitas', [KomunitasController::class, 'store']);
@@ -39,7 +38,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/konsultasi', [KonsultasiController::class, 'index']);
     Route::get('/konsultasi/pakar', [KonsultasiController::class,'create']);
     Route::post('/konsultasi', [KonsultasiController::class, 'store']);
-
     Route::get('/konsultasi/{konsultasi}', [KonsultasiController::class, 'show']);
     Route::post('/konsultasi/{konsultasi}/pesan', [PesanController::class, 'store']);
     Route::put('/pesan/{pesan}/status/{status}', [PesanController::class, 'updateStatus']);
@@ -47,16 +45,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Guide Book
     Route::get('/guide-books', [GuideBookController::class, 'index']);
-    Route::post('/guide-books', [GuideBookController::class, 'store']);
     Route::get('/guide-books/{guideBook}', [GuideBookController::class, 'show']);
+    Route::post('/request-role-change', [RoleChangeRequestController::class, 'requestRoleChange']);
+
+});
+
+Route::middleware(['auth:sanctum', 'pakar'])->group(function () {
+    Route::post('/guide-books', [GuideBookController::class, 'store']);
     Route::put('/guide-books/{guideBook}', [GuideBookController::class, 'update']);
     Route::delete('/guide-books/{guideBook}', [GuideBookController::class, 'destroy']);
 });
 
 
+
 Route::post('/admin/login', [AdminController::class, 'login']);
-// Admin API Routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+
     Route::get('/admin/categories', [AdminController::class, 'index']);
     Route::post('/admin/categories', [AdminController::class, 'createCategory']);
     Route::delete('/admin/categories/{id}', [AdminController::class, 'deleteCategory']);
@@ -68,3 +72,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/admin/guide-books/{guideBook}', [AdminController::class, 'updateGuideBook']);
     Route::delete('/admin/guide-books/{guideBook}', [AdminController::class, 'destroyGuideBook']);
 });
+

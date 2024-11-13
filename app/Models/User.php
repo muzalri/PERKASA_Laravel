@@ -50,7 +50,12 @@ class User extends Authenticatable
         ];
     }
 
-        public function komunitas()
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function komunitas()
     {
         return $this->hasMany(Komunitas::class);
     }

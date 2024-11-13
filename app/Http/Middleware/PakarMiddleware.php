@@ -14,8 +14,9 @@ class PakarMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        \Log::info('User role: ' . (auth()->check() ? auth()->user()->role : 'Guest'));
         if (!auth()->check() || auth()->user()->role !== 'pakar') {
-            return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         return $next($request);
