@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Konsultasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class KonsultasiController extends Controller
 {
@@ -24,6 +25,15 @@ class KonsultasiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $konsultasi
+        ]);
+    }
+
+    public function create()
+    {
+        $pakars = User::where('role', 'pakar')->get(); // Mengambil semua pengguna dengan role pakar
+        return response()->json([
+            'success' => true,
+            'data' => $pakars
         ]);
     }
 

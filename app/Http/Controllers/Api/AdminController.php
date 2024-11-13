@@ -112,7 +112,13 @@ class AdminController extends Controller
     }
 
     public function showArticle(Komunitas $komunitas){
-        
+
+        $komunitas = Komunitas::with(['user', 'category','likes','komentars'])->latest()->paginate(10);
+        return response()->json([
+            'success' => true,
+            'data' => $komunitas
+        ]);
+
     }
 
     public function indexGuideBooks()
