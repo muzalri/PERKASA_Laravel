@@ -26,11 +26,7 @@ class KomunitasController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => [
-                'title' => $komunitas->title,
-                'body' => $komunitas->body,
-                'image' => asset('storage/' . $komunitas->image), // Menghasilkan URL gambar
-            ]
+            'data' => $komunitas
         ]);
     }
 

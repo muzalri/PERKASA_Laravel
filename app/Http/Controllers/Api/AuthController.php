@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
@@ -134,5 +133,102 @@ class AuthController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $request->user()->id,
+            'no_hp' => 'sometimes|required|string|max:20',
+            'alamat' => 'sometimes|required|string|max:500',
+            'password' => 'sometimes|nullable|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = $request->user();
+
+        if ($request->has('name')) {
+            $user->name = $request->name;
+        }
+        if ($request->has('email')) {
+            $user->email = $request->email;
+        }
+        if ($request->has('no_hp')) {
+            $user->no_hp = $request->no_hp;
+        }
+        if ($request->has('alamat')) {
+            $user->alamat = $request->alamat;
+        }
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profil berhasil diperbarui',
+            'data' => $user
+        ]);
+    }
+
+    public function uploadPhoto(Request $request)
+    {
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = $request->user();
+
+        if ($request->hasFile('profile_photo')) {
+            // Hapus foto lama jika ada
+            if ($user->profile_photo) {
+                Storage::disk('public')->delete($user->profile_photo);
+            }
+            // Simpan foto baru
+            $path = $request->file('profile_photo')->store('profile-photos', 'public');
+            $user->profile_photo = $path;
+            $user->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto profil berhasil diperbarui',
+            'data' => $user
+        ]);
+    }
+
+    public function deletePhoto(Request $request)
+    {
+        $user = $request->user();
+
+        // Cek apakah pengguna memiliki foto profil
+        if ($user->profile_photo) {
+            // Hapus foto dari penyimpanan
+            Storage::disk('public')->delete($user->profile_photo);
+            
+            // Reset atribut foto profil di database
+            $user->profile_photo = null;
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto profil berhasil dihapus',
+                'data' => $user
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Tidak ada foto profil yang dapat dihapus'
+        ], 404);
     }
 } 
