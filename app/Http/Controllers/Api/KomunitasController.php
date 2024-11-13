@@ -14,7 +14,7 @@ class KomunitasController extends Controller
     // Menampilkan daftar komunitas
     public function index()
     {
-        $komunitas = Komunitas::with(['user', 'category','likes'])->latest()->paginate(10);
+        $komunitas = Komunitas::with(['user', 'category','likes','komentars'])->latest()->paginate(10);
         return response()->json([
             'success' => true,
             'data' => $komunitas
@@ -82,26 +82,27 @@ class KomunitasController extends Controller
     }
 
     // Menangani like atau dislike
-    public function toggleLike(Request $request, Komunitas $komunitas)
+    public function toggleLike(Komunitas $komunitas)
     {
-        $request->validate([
-            'is_like' => 'required|boolean',
-        ]);
+        $user = auth()->user();
+        $like = $komunitas->likes()->where('user_id', $user->id)->first();
 
-        $like = KomunitasLike::updateOrCreate(
-            [
-                'user_id' => Auth::id(),
-                'komunitas_id' => $komunitas->id,
-            ],
-            [
-                'is_like' => $request->is_like,
-            ]
-        );
+        if ($like) {
+            $like->delete();
+            $status = false;
+        } else {
+            $komunitas->likes()->create([
+                'user_id' => $user->id,
+                'is_like' => true
+            ]);
+            $status = true;
+        }
 
         return response()->json([
             'success' => true,
-            'likes_count' => $komunitas->likesCount(),
-            'dislikes_count' => $komunitas->dislikesCount(),
+            'message' => $status ? 'Berhasil menyukai postingan' : 'Berhasil membatalkan suka',
+            'is_liked' => $status,
+            'total_likes' => $komunitas->likes()->where('is_like', true)->count()
         ]);
     }
 
