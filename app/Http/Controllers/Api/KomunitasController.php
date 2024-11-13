@@ -24,11 +24,20 @@ class KomunitasController extends Controller
     // Menampilkan detail komunitas
     public function show(Komunitas $komunitas)
     {
+        $data = Komunitas::with(['user', 'category', 'likes', 'komentars'])
+            ->where('id', $komunitas->id)
+            ->first();
+        
+        if (!$data) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data komunitas tidak ditemukan'
+            ], 404);
+        }
 
-        $komunitas = Komunitas::with(['user', 'category','likes','komentars'])->latest()->paginate(10);
         return response()->json([
             'success' => true,
-            'data' => $komunitas
+            'data' => $data
         ]);
     }
 
