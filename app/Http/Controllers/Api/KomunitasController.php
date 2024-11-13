@@ -14,7 +14,7 @@ class KomunitasController extends Controller
     // Menampilkan daftar komunitas
     public function index()
     {
-        $komunitas = Komunitas::with(['user', 'category'])->latest()->paginate(10);
+        $komunitas = Komunitas::with(['user', 'category','likes'])->latest()->paginate(10);
         return response()->json([
             'success' => true,
             'data' => $komunitas
@@ -24,6 +24,8 @@ class KomunitasController extends Controller
     // Menampilkan detail komunitas
     public function show(Komunitas $komunitas)
     {
+
+        $komunitas = Komunitas::with(['user', 'category','likes','komentars'])->latest()->paginate(10);
         return response()->json([
             'success' => true,
             'data' => $komunitas

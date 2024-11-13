@@ -32,12 +32,14 @@ class KonsultasiController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
+            'pakar_id' => 'required|exists:users,id',
         ]);
 
         $konsultasi = Konsultasi::create([
             'user_id' => Auth::id(),
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
+            'pakar_id' => $request->pakar_id,
             'status' => 'pending'
         ]);
 

@@ -111,6 +111,10 @@ class AdminController extends Controller
         return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus']);
     }
 
+    public function showArticle(Komunitas $komunitas){
+        
+    }
+
     public function indexGuideBooks()
     {
         $guideBooks = GuideBook::latest()->paginate(10);
