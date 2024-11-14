@@ -14,7 +14,7 @@ class PakarMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        \Log::info('User role: ' . (auth()->check() ? auth()->user()->role : 'Guest'));
+
         if (!auth()->check() || auth()->user()->role !== 'pakar') {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
