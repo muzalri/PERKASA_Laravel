@@ -12,7 +12,12 @@ class CreateGuideBooksTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
-            $table->string('category');
+            $table->foreignId('category_id')
+                  ->references('id')
+                  ->on('komunitas_categories')
+                  ->onDelete('cascade');
+            $table->string('image_path')->nullable();
+            $table->string('video_path')->nullable();
             $table->timestamps();
         });
     }

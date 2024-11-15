@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UserAndPakarSeeder::class,
+            AdminSeeder::class,
         ]);
         
         User::factory()->create([

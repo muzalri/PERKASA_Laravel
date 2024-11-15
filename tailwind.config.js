@@ -10,6 +10,9 @@ export default {
       colors: {
         'perkasa-blue': '#7A99A8',
       },
+        'perkasa-blue': '#34BCC2',
+        'perkasa-blue-1': '#0A766C'
+      }
     },
   },
   plugins: [],

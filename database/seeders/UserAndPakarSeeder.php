@@ -12,7 +12,7 @@ class UserAndPakarSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'Pengguna Biasa',
+                'name' => 'user_anwar',
                 'email' => 'anwar@gmail.com',
                 'password' => Hash::make('12345678'),
                 'no_hp' => '081234567890',
@@ -20,7 +20,7 @@ class UserAndPakarSeeder extends Seeder
                 'role' => 'user',
             ],
             [
-                'name' => 'Pengguna Biasa Aja',
+                'name' => 'user_cibe',
                 'email' => 'cibe@gmail.com',
                 'password' => Hash::make('12345678'),
                 'no_hp' => '085817288710',
@@ -29,7 +29,7 @@ class UserAndPakarSeeder extends Seeder
                 
             ],
             [
-                'name' => 'Pengguna Biasa Aja',
+                'name' => 'user_algip',
                 'email' => 'algip@gmail.com',
                 'password' => Hash::make('12345678'),
                 'no_hp' => '085817288710',
@@ -45,8 +45,8 @@ class UserAndPakarSeeder extends Seeder
                 'role' => 'pakar',
             ],
             [
-                'name' => 'Pakar Ahli',
-                'email' => 'pakar2@gmail.com',
+                'name' => 'Pakar_cahya',
+                'email' => 'cahyailham@gmail.com',
                 'password' => Hash::make('12345678'),
                 'no_hp' => '087654321098',
                 'alamat' => 'Jl. Pakar No. 456, Kota Pakar',
