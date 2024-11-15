@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\KomunitasCategory; // Import model KomunitasCategory
 use App\Models\Komunitas; // Import model Komunitas
 use App\Models\GuideBook; // Import model GuideBook
+use App\Models\Komentar; // Import model Komentar
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -104,19 +105,20 @@ class AdminController extends Controller
         return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus']);
     }
 
-    public function showArticle(Komunitas $komunitas){
-
-        $komunitas = Komunitas::with(['user', 'category','likes','komentars'])->latest()->paginate(10);
+    public function showArticle(Komunitas $komunitas)
+    {
+        $article = Komunitas::with(['user', 'category', 'likes', 'komentars.user'])
+                    ->findOrFail($komunitas->id);
+        
         return response()->json([
             'success' => true,
-            'data' => $komunitas
+            'data' => $article
         ]);
-
     }
 
     public function indexGuideBooks()
     {
-        $guideBooks = GuideBook::latest()->paginate(10);
+        $guideBooks = GuideBook::with('category_id','user_id')->latest()->paginate(10);
         return response()->json([
             'success' => true,
             'data' => $guideBooks
@@ -143,6 +145,8 @@ class AdminController extends Controller
             $validatedData['video_path'] = $videoPath;
         }
 
+
+        $validatedData['user_id'] = auth()->id();
         $guideBook = GuideBook::create($validatedData);
 
         return response()->json([
@@ -154,18 +158,20 @@ class AdminController extends Controller
 
     public function showGuideBook(GuideBook $guideBook)
     {
+        $guideBook = GuideBook::with(['category_id', 'user_id'])
+            ->findOrFail($guideBook->id);
+
         return response()->json([
             'success' => true,
             'data' => $guideBook
         ]);
     }
-
     public function updateGuideBook(Request $request, GuideBook $guideBook)
     {
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
-            'category' => 'required',
+            'category_id' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
         ]);
@@ -186,6 +192,8 @@ class AdminController extends Controller
             $validatedData['video_path'] = $videoPath;
         }
 
+
+        $validatedData['user_id'] = auth()->id();
         $guideBook->update($validatedData);
 
         return response()->json([
@@ -211,4 +219,39 @@ class AdminController extends Controller
             'message' => 'Guide book berhasil dihapus'
         ]);
     }
+
+    public function indexArticles()
+    {
+        $articles = Komunitas::with('category', 'user',)->latest()->paginate(10);
+        return response()->json([
+            'success' => true,
+            'data' => $articles
+        ]);
+    }
+
+    public function deleteKomentar(Komunitas $komunitas, Komentar $komentar)
+    {
+        // Verifikasi bahwa komentar berada di artikel yang benar
+        if ($komentar->komunitas_id !== $komunitas->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Komentar tidak ditemukan di artikel ini'
+            ], 404);
+        }
+
+        try {
+            $komentar->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Komentar berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus komentar'
+            ], 500);
+        }
+    }
+
 }
