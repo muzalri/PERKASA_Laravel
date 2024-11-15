@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin; // Pastikan model Admin di-import
+use App\Models\User; // Pastikan model Admin di-import
 use App\Models\KomunitasCategory; // Import model KomunitasCategory
 use App\Models\Komunitas; // Import model Komunitas
 use App\Models\GuideBook; // Import model GuideBook
@@ -18,42 +18,35 @@ class AdminController extends Controller
     {
         // Validasi input
         $request->validate([
-            'username' => 'required|string',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        // Mencari admin berdasarkan username
-        $admin = Admin::where('username', $request->username)->first();
+        // Mencari user dengan role admin berdasarkan email
+        $admin = User::where('email', $request->email)
+                     ->where('role', 'admin')
+                     ->first();
 
         // Memeriksa apakah admin ditemukan
-        if ($admin) {
-            // Memeriksa apakah password cocok
-            if (Hash::check($request->password, $admin->password)) {
-                // Buat token
-                $token = $admin->createToken('AdminToken')->plainTextToken;
+        if ($admin && Hash::check($request->password, $admin->password)) {
+            // Buat token
+            $token = $admin->createToken('AdminToken')->plainTextToken;
 
-                return response()->json([
-                    'success' => true,
-                    'data' => [
-                        'admin' => $admin,
-                        'token' => $token,
-                    ],
-                    'message' => 'Login berhasil!',
-                ], 200);
-            } else {
-                // Password tidak cocok
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Kredensial tidak valid.',
-                ], 401);
-            }
-        } else {
-            // Admin tidak ditemukan
             return response()->json([
-                'success' => false,
-                'message' => 'Kredensial tidak valid.',
-            ], 401);
+                'success' => true,
+                'data' => [
+                    'admin' => $admin,
+                    'token' => $token,
+                ],
+                'message' => 'Login berhasil!',
+            ], 200);
         }
+
+        // Kredensial tidak valid
+        return response()->json([
+            'success' => false,
+            'message' => 'Email atau password tidak valid.',
+        ], 401);
     }
 
     // Fungsi untuk melihat semua kategori komunitas
