@@ -13,8 +13,8 @@ class GuideBookController extends Controller
 
     public function index()
     {
-        $guideBooks = GuideBook::all();
-        return view('guide_books.index', compact('guideBooks'));
+        $guideBooks = GuideBook::latest()->get();
+        return view('guide-books.index', compact('guideBooks'));
     }
 
     public function show(GuideBook $guideBook)

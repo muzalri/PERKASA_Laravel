@@ -35,6 +35,31 @@ class KonsultasiController extends Controller
         }])
         ->latest()
         ->get();
+        if ($user->role === 'pakar') {
+            $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
+                $query->latest();
+            }])
+            ->where('pakar_id', $user->id)
+            ->withLastMessageTime()
+            ->withCount(['pesans as unread_count' => function($query) {
+                $query->where('user_id', '!=', auth()->id())
+                      ->where('status', 'belum_dibaca');
+            }])
+            ->latest()
+            ->paginate(10);
+        } else {
+            $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
+                $query->latest();
+            }])
+            ->where('user_id', $user->id)
+            ->withLastMessageTime()
+            ->withCount(['pesans as unread_count' => function($query) {
+                $query->where('user_id', '!=', auth()->id())
+                      ->where('status', 'belum_dibaca');
+            }])
+            ->latest()
+            ->paginate(10);
+        }
 
         return view('konsultasi.index', compact('konsultasis'));
     }

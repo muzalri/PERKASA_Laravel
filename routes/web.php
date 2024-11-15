@@ -66,13 +66,34 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/komunitas/{komunitas}', [KomunitasController::class, 'articleshow'])->name('komunitas.show');
 
 // Marketplace dan Konsultasi
-Route::get('/marketplace', [MarketplaceController::class, 'index'])->middleware('auth')->name('marketplace');
+Route::get('/marketplace', [MarketplaceController::class, 'index'])->middleware('auth')->name('marketplace.index');
 Route::get('/konsultasi', [KonsultasiController::class, 'index'])->middleware('auth')->name('konsultasi.index');
 
 Route::resource('konsultasi', KonsultasiController::class);
 Route::post('konsultasi/{konsultasi}/pesan', [PesanController::class, 'store'])->name('pesan.store');
 
 Route::resource('guide-books', GuideBookController::class)->middleware('auth');
+Route::post('/upload-image', [ChatController::class, 'uploadImage'])->name('upload.image');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace');
+    Route::get('/marketplace/create', [MarketplaceController::class, 'create'])->name('marketplace.create');
+    Route::post('/marketplace', [MarketplaceController::class, 'store'])->name('marketplace.store');
+    Route::get('/marketplace/{product}', [MarketplaceController::class, 'show'])->name('marketplace.show');
+    Route::get('/marketplace/{product}/edit', [MarketplaceController::class, 'edit'])->name('marketplace.edit');
+    Route::put('/marketplace/{product}', [MarketplaceController::class, 'update'])->name('marketplace.update');
+    Route::delete('/marketplace/{product}', [MarketplaceController::class, 'destroy'])->name('marketplace.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/guide-books', [GuideBookController::class, 'index'])->name('guide-books.index');
+    Route::get('/guide-books/create', [GuideBookController::class, 'create'])->name('guide-books.create');
+    Route::post('/guide-books', [GuideBookController::class, 'store'])->name('guide-books.store');
+    Route::get('/guide-books/{guideBook}', [GuideBookController::class, 'show'])->name('guide-books.show');
+    Route::get('/guide-books/{guideBook}/edit', [GuideBookController::class, 'edit'])->name('guide-books.edit');
+    Route::put('/guide-books/{guideBook}', [GuideBookController::class, 'update'])->name('guide-books.update');
+    Route::delete('/guide-books/{guideBook}', [GuideBookController::class, 'destroy'])->name('guide-books.destroy');
+});
 
 Route::post('/pesan/{pesan}/status/{status}', [PesanController::class, 'updateStatus'])->name('pesan.updateStatus');
 
