@@ -30,6 +30,8 @@ class GuideBookController extends Controller
             'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
         ]);
 
+        $validatedData['user_id'] = auth()->id();
+
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('guide_book_images', 'public');
             $validatedData['image_path'] = $imagePath;
@@ -59,10 +61,10 @@ class GuideBookController extends Controller
 
     public function update(Request $request, GuideBook $guideBook)
     {
-        if ($guideBook->user_id !== Auth::id()) {
+        if ($guideBook->user_id !== auth()->id()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized'
+                'message' => 'kamu bukan author dari guide book ini'
             ], 403);
         }
 

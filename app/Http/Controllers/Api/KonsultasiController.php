@@ -12,16 +12,57 @@ class KonsultasiController extends Controller
 {
     public function index()
     {
-        $konsultasi = Konsultasi::with(['user', 'pakar', 'pesans'])->latest()->paginate(10);
+        $user = auth()->user();
+        
+        $konsultasis = Konsultasi::with(['user', 'pakar', 'pesans' => function($query) {
+            $query->latest();
+        }]);
+
+        // Filter berdasarkan role
+        if ($user->role === 'pakar') {
+            $konsultasis->where('pakar_id', $user->id)
+                       ->where('status_pakar', 'active');
+        } else {
+            $konsultasis->where('user_id', $user->id)
+                       ->where('status_user', 'active');
+        }
+
+        // Hitung pesan yang belum dibaca
+        $konsultasis = $konsultasis->withCount(['pesans as unread_count' => function($query) use ($user) {
+            $query->where('user_id', '!=', $user->id)
+                  ->where('status', 'belum_dibaca');
+        }])
+        ->latest()
+        ->paginate(10);
+
         return response()->json([
             'success' => true,
-            'data' => $konsultasi
+            'data' => $konsultasis
         ]);
     }
 
     public function show(Konsultasi $konsultasi)
     {
-        $konsultasi->load(['user', 'pakar', 'pesans.user']);
+        $user = auth()->user();
+        
+        // Verifikasi akses
+        if ($user->id !== $konsultasi->user_id && $user->id !== $konsultasi->pakar_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized access'
+            ], 403);
+        }
+
+        // Update status pesan menjadi dibaca
+        if ($user->id === $konsultasi->pakar_id || $user->id === $konsultasi->user_id) {
+            $konsultasi->pesans()
+                ->where('user_id', '!=', $user->id)
+                ->where('status', 'belum_dibaca')
+                ->update(['status' => 'dibaca']);
+        }
+
+        $konsultasi->load(['pesans.user', 'user', 'pakar']);
+        
         return response()->json([
             'success' => true,
             'data' => $konsultasi

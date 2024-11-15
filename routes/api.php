@@ -36,12 +36,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Konsultasi
     Route::get('/konsultasi', [KonsultasiController::class, 'index']);
+    Route::get('/konsultasi/{konsultasi}', [KonsultasiController::class, 'show']);
     Route::get('/konsultasi/pakar', [KonsultasiController::class,'create']);
     Route::post('/konsultasi', [KonsultasiController::class, 'store']);
-    Route::get('/konsultasi/{konsultasi}', [KonsultasiController::class, 'show']);
-
-
-    Route::get('/konsultasi/{konsultasi}', [KonsultasiController::class, 'show']);
     Route::post('/konsultasi/{konsultasi}/pesan', [PesanController::class, 'store']);
     Route::put('/pesan/{pesan}/status/{status}', [PesanController::class, 'updateStatus']);
     Route::get('/konsultasi/{konsultasi}/messages-status', [KonsultasiController::class, 'getMessagesStatus']);
