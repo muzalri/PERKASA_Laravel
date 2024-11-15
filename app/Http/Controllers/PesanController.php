@@ -11,34 +11,30 @@ class PesanController extends Controller
     public function store(Request $request, Konsultasi $konsultasi)
     {
         $request->validate([
-            'isi' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'isi' => 'required_without:image',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
-        $konsultasi->pesans()
-            ->where('user_id', '!=', auth()->id())
-            ->where('status', '!=', 'dibalas')
-            ->update(['status' => 'dibalas']);
 
         $data = [
             'konsultasi_id' => $konsultasi->id,
             'user_id' => auth()->id(),
             'isi' => $request->isi,
-            'status' => 'belum_dibaca',
-            'created_at' => now(),
+            'status' => 'terkirim'
         ];
 
-        if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('pesan_gambar', 'public');
-            $data['gambar'] = $path;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('pesan_images', 'public');
+            $data['image_path'] = $imagePath;
         }
 
-        Pesan::create($data);
+        $pesan = Pesan::create($data);
+        $pesan->load('user');
 
-        $konsultasi->touch();
-
-        return redirect()->route('konsultasi.show', $konsultasi)
-            ->with('success', 'Pesan berhasil dikirim');
+        return response()->json([
+            'success' => true,
+            'message' => 'Pesan berhasil dikirim',
+            'data' => $pesan
+        ]);
     }
 
     public function updateStatus(Pesan $pesan, $status)

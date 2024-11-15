@@ -9,7 +9,7 @@ class Pesan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['konsultasi_id', 'user_id', 'isi', 'gambar', 'status'];
+    protected $fillable = ['konsultasi_id', 'user_id', 'isi', 'gambar', 'status', 'gambar'];
 
     public function konsultasi()
     {
