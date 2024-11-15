@@ -13,7 +13,7 @@ class GuideBookController extends Controller
 {
     public function index()
     {
-        $guideBooks = GuideBook::with('category_id')->latest()->paginate(10);
+        $guideBooks = GuideBook::with('category_id','user_id')->latest()->paginate(10);
         return response()->json([
             'success' => true,
             'data' => $guideBooks
@@ -53,6 +53,9 @@ class GuideBookController extends Controller
 
     public function show(GuideBook $guideBook)
     {
+        $guideBook = GuideBook::with(['category_id', 'user_id'])
+            ->findOrFail($guideBook->id);
+
         return response()->json([
             'success' => true,
             'data' => $guideBook

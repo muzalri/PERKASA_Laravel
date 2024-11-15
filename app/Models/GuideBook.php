@@ -22,4 +22,9 @@ class GuideBook extends Model
     {
         return $this->belongsTo(KomunitasCategory::class, 'category_id');
     }
+
+    public function user_id()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
