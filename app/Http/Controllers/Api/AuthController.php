@@ -76,12 +76,16 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        // Tambahkan pengecekan role admin
+        $isAdmin = $user->role === 'admin';
+
         return response()->json([
             'success' => true,
             'message' => 'Login berhasil',
             'data' => [
                 'user' => $user,
-                'token' => $token
+                'token' => $token,
+                'is_admin' => $isAdmin
             ]
         ]);
     }
