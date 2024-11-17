@@ -53,7 +53,7 @@
                     <label for="image" class="block text-sm font-medium text-gray-700">Gambar</label>
                     @if($guideBook->image_path)
                         <div class="mt-2 mb-4">
-                            <img src="{{ asset('storage/' . $guideBook->image_path) }}" 
+                            <img src="{{ asset('imagedb/guide_book/images/' . $guideBook->image_path) }}" 
                                  alt="Current image" class="max-w-xs rounded">
                         </div>
                     @endif
@@ -75,7 +75,7 @@
                     @if($guideBook->video_path)
                         <div class="mt-2 mb-4">
                             <video width="320" height="240" controls class="rounded">
-                                <source src="{{ asset('storage/' . $guideBook->video_path) }}" type="video/mp4">
+                                <source src="{{ asset('imagedb/guide_book/videos/' . $guideBook->video_path) }}" type="video/mp4">
                                 Browser Anda tidak mendukung tag video.
                             </video>
                         </div>

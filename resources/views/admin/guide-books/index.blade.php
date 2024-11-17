@@ -43,12 +43,12 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="text-sm text-gray-500">
-                                {{ $book->category_id?->name ?? 'Tidak ada kategori' }}
+                                {{ optional($book->category_id)->name ?? 'Tidak ada kategori' }}
                             </div>
                         </td>
                         <td class="px-6 py-4">
                             <div class="text-sm text-gray-500">
-                                {{ $book->user_id?->name ?? 'Tidak ada penulis' }}
+                                {{ optional($book->user_id)->name ?? 'Tidak ada penulis' }}
                             </div>
                         </td>
                         <td class="px-6 py-4">

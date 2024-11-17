@@ -1,26 +1,38 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Detail Artikel')
-@section('header', 'Detail Artikel')
+@section('title', $article->title)
 
 @section('content')
 <div class="bg-white rounded-lg shadow-sm">
     <div class="p-6">
+        <!-- Header Artikel -->
         <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">{{ $article->title }}</h2>
-            <div class="mt-2 text-sm text-gray-600">
-                Kategori: {{ $article->category->name }}
-            </div>
-            <div class="text-sm text-gray-600">
-                Penulis: {{ $article->user->name }}
-            </div>
-            <div class="text-sm text-gray-600">
-                Tanggal: {{ $article->created_at->format('d/m/Y H:i') }}
+            <h1 class="text-2xl font-bold text-gray-900">{{ $article->title }}</h1>
+            <div class="mt-2 text-gray-600">
+                <span>Oleh: {{ $article->user->name }}</span> |
+                <span>Kategori: {{ $article->category->name }}</span> |
+                <span>{{ $article->created_at->format('d M Y H:i') }}</span>
             </div>
         </div>
 
-        <div class="prose max-w-none mb-6">
-            {!! $article->body !!}
+        <!-- Gambar Artikel (jika ada) -->
+        @if($article->image)
+        <div class="mb-6">
+            <img src="{{ asset('imagedb/komunitas/' . $article->image) }}" 
+                 alt="Gambar artikel" 
+                 class="max-w-full h-auto rounded-lg shadow-sm">
+        </div>
+        @endif
+
+        <!-- Konten Artikel -->
+        <div class="prose max-w-none mb-8">
+            {!! nl2br(e($article->body)) !!}
+        </div>
+
+        <!-- Statistik -->
+        <div class="flex items-center space-x-4 text-gray-600 mb-8">
+            <span><i class="fas fa-heart text-red-500"></i> {{ $article->likes->count() }} Suka</span>
+            <span><i class="fas fa-comment text-blue-500"></i> {{ $article->komentars->count() }} Komentar</span>
         </div>
 
         <!-- Daftar Komentar -->
@@ -47,20 +59,13 @@
             @endforeach
         </div>
 
-        <div class="flex justify-end space-x-3 mt-6">
+        <!-- Tombol Kembali -->
+        <div class="mt-6">
             <a href="{{ route('admin.articles.index') }}" 
-               class="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
-                Kembali
+               class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Kembali ke Daftar Artikel
             </a>
-            <form action="{{ route('admin.articles.destroy', $article) }}" method="POST" class="inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit" 
-                        class="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600"
-                        onclick="return confirm('Yakin ingin menghapus artikel ini?')">
-                    Hapus Artikel
-                </button>
-            </form>
         </div>
     </div>
 </div>

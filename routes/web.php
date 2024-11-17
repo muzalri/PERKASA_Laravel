@@ -67,12 +67,6 @@ Route::middleware(['auth'])->group(function () {
 // Detail Komunitas
 Route::get('/komunitas/{komunitas}', [KomunitasController::class, 'articleshow'])->name('komunitas.show');
 
-// Marketplace dan Konsultasi
-<<<<<<< Updated upstream
-Route::get('/marketplace', [MarketplaceController::class, 'index'])->middleware('auth')->name('marketplace');
-=======
->>>>>>> Stashed changes
-Route::get('/konsultasi', [KonsultasiController::class, 'index'])->middleware('auth')->name('konsultasi.index');
 
 Route::resource('konsultasi', KonsultasiController::class);
 Route::post('konsultasi/{konsultasi}/pesan', [PesanController::class, 'store'])->name('pesan.store');

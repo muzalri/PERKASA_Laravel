@@ -13,7 +13,7 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
-                    <span class="text-white text-xl font-bold">Admin Panel</span>
+                    <a href="{{ route('admin.dashboard') }}" class="text-white text-xl font-bold">Admin Panel</a>
                 </div>
                 <div class="flex space-x-4">
                     <a href="{{ route('admin.articles.index') }}" class="text-gray-300 hover:text-white px-3 py-2">Artikel</a>

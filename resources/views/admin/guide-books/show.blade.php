@@ -9,10 +9,10 @@
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-800">{{ $guideBook->title }}</h2>
             <div class="mt-2 text-sm text-gray-600">
-                Kategori: {{ $guideBook->category_id->name }}
+                Kategori: {{ optional($guideBook->category_id)->name ?? 'Tidak ada kategori' }}
             </div>
             <div class="text-sm text-gray-600">
-                Penulis: {{ $guideBook->user_id->name }}
+                Penulis: {{ optional($guideBook->user_id)->name ?? 'Tidak ada penulis' }}
             </div>
         </div>
 
@@ -23,7 +23,7 @@
         @if($guideBook->image_path)
         <div class="mb-6">
             <h3 class="text-lg font-semibold mb-2">Gambar</h3>
-            <img src="{{ asset('storage/' . $guideBook->image_path) }}" 
+            <img src="{{ asset('imagedb/guide_book/images/' . $guideBook->image_path) }}" 
                  alt="{{ $guideBook->title }}" 
                  class="max-w-xl rounded-lg">
         </div>
@@ -33,7 +33,7 @@
         <div class="mb-6">
             <h3 class="text-lg font-semibold mb-2">Video</h3>
             <video width="640" height="360" controls class="rounded-lg">
-                <source src="{{ asset('storage/' . $guideBook->video_path) }}" type="video/mp4">
+                <source src="{{ asset('imagedb/guide_book/videos/' . $guideBook->video_path) }}" type="video/mp4">
                 Browser Anda tidak mendukung tag video.
             </video>
         </div>

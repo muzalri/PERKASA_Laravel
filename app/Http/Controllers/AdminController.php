@@ -94,7 +94,7 @@ class AdminController extends Controller
     // Fungsi untuk menampilkan detail guide book
     public function showGuideBook(GuideBook $guideBook)
     {
-        $guideBook = GuideBook::with(['category_id', 'user_id'])
+        $guideBook = GuideBook::with(['category_id:id,name', 'user_id:id,name'])
             ->findOrFail($guideBook->id);
         return view('admin.guide-books.show', compact('guideBook'));
     }
@@ -111,13 +111,17 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('guide_book_images', 'public');
-            $validatedData['image_path'] = $imagePath;
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('imagedb/guide_book/images'), $fileName);
+            $validatedData['image_path'] = $fileName;
         }
 
         if ($request->hasFile('video')) {
-            $videoPath = $request->file('video')->store('guide_book_videos', 'public');
-            $validatedData['video_path'] = $videoPath;
+            $file = $request->file('video');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('imagedb/guide_book/videos'), $fileName);
+            $validatedData['video_path'] = $fileName;
         }
 
         $validatedData['user_id'] = auth()->id();
@@ -139,18 +143,26 @@ class AdminController extends Controller
 
         if ($request->hasFile('image')) {
             if ($guideBook->image_path) {
-                Storage::disk('public')->delete($guideBook->image_path);
+                if (file_exists(public_path('imagedb/guide_book/images/' . $guideBook->image_path))) {
+                    unlink(public_path('imagedb/guide_book/images/' . $guideBook->image_path));
+                }
             }
-            $imagePath = $request->file('image')->store('guide_book_images', 'public');
-            $validatedData['image_path'] = $imagePath;
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('imagedb/guide_book/images'), $fileName);
+            $validatedData['image_path'] = $fileName;
         }
 
         if ($request->hasFile('video')) {
             if ($guideBook->video_path) {
-                Storage::disk('public')->delete($guideBook->video_path);
+                if (file_exists(public_path('imagedb/guide_book/videos/' . $guideBook->video_path))) {
+                    unlink(public_path('imagedb/guide_book/videos/' . $guideBook->video_path));
+                }
             }
-            $videoPath = $request->file('video')->store('guide_book_videos', 'public');
-            $validatedData['video_path'] = $videoPath;
+            $file = $request->file('video');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('imagedb/guide_book/videos'), $fileName);
+            $validatedData['video_path'] = $fileName;
         }
 
         $validatedData['user_id'] = auth()->id();
@@ -163,10 +175,14 @@ class AdminController extends Controller
     public function destroyGuideBook(GuideBook $guideBook)
     {
         if ($guideBook->image_path) {
-            Storage::disk('public')->delete($guideBook->image_path);
+            if (file_exists(public_path('imagedb/guide_book/images/' . $guideBook->image_path))) {
+                unlink(public_path('imagedb/guide_book/images/' . $guideBook->image_path));
+            }
         }
         if ($guideBook->video_path) {
-            Storage::disk('public')->delete($guideBook->video_path);
+            if (file_exists(public_path('imagedb/guide_book/videos/' . $guideBook->video_path))) {
+                unlink(public_path('imagedb/guide_book/videos/' . $guideBook->video_path));
+            }
         }
 
         $guideBook->delete();
@@ -193,5 +209,11 @@ class AdminController extends Controller
     {
         $categories = KomunitasCategory::all();
         return view('admin.categories.index', compact('categories'));
+    }
+
+    public function editGuideBook(GuideBook $guideBook)
+    {
+        $categories = KomunitasCategory::all();
+        return view('admin.guide-books.edit', compact('guideBook', 'categories'));
     }
 }
