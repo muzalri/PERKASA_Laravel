@@ -24,7 +24,7 @@ class KomunitasController extends Controller
     // Menampilkan detail komunitas
     public function show(Komunitas $komunitas)
     {
-        $data = Komunitas::with(['user', 'category', 'likes', 'komentars'])
+        $data = Komunitas::with(['user', 'category', 'likes', 'komentars.user'])
             ->where('id', $komunitas->id)
             ->first();
         
@@ -34,6 +34,9 @@ class KomunitasController extends Controller
                 'message' => 'Data komunitas tidak ditemukan'
             ], 404);
         }
+
+        // Transform response untuk menambahkan photo_url pada setiap komentar
+
 
         return response()->json([
             'success' => true,
@@ -54,31 +57,47 @@ class KomunitasController extends Controller
     // Menyimpan artikel baru
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|max:255',
-            'komunitas_category_id' => 'required|exists:komunitas_categories,id',
-            'body' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        try {
+            $request->validate([
+                'title' => 'required|max:255',
+                'komunitas_category_id' => 'required|exists:komunitas_categories,id',
+                'body' => 'required',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public'); // Menyimpan gambar di storage/app/public/images
+            // Pastikan direktori ada
+            if (!file_exists(public_path('imagedb/komunitas'))) {
+                mkdir(public_path('imagedb/komunitas'), 0775, true);
+            }
+
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('imagedb/komunitas'), $fileName);
+                $imagePath = $fileName;
+            }
+
+            $komunitas = Komunitas::create([
+                'user_id' => Auth::id(),
+                'title' => $request->title,
+                'komunitas_category_id' => $request->komunitas_category_id,
+                'body' => $request->body,
+                'image' => $imagePath,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Artikel berhasil dibuat',
+                'data' => $komunitas
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal membuat artikel',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $komunitas = Komunitas::create([
-            'user_id' => Auth::id(),
-            'title' => $request->title,
-            'komunitas_category_id' => $request->komunitas_category_id,
-            'body' => $request->body,
-            'image' => $imagePath, // Simpan path gambar di database
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Artikel berhasil dibuat',
-            'data' => $komunitas
-        ], 201);
     }
 
     // Menangani like atau dislike
@@ -139,12 +158,33 @@ class KomunitasController extends Controller
 
     public function destroy(Komunitas $komunitas)
     {
-        // Pastikan hanya pemilik yang bisa menghapus
-        if ($komunitas->user_id !== Auth::id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
-        }
+        try {
+            if ($komunitas->user_id !== Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
 
-        $komunitas->delete();
-        return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus']);
+            // Hapus gambar jika ada
+            if ($komunitas->image) {
+                if (file_exists(public_path('imagedb/komunitas/' . $komunitas->image))) {
+                    unlink(public_path('imagedb/komunitas/' . $komunitas->image));
+                }
+            }
+
+            $komunitas->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Artikel berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus artikel',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
