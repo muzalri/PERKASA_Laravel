@@ -22,33 +22,53 @@ class GuideBookController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'category_id' => 'required|exists:komunitas_categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
-        ]);
-
-        $validatedData['user_id'] = auth()->id();
-
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('guide_book_images', 'public');
-            $validatedData['image_path'] = $imagePath;
+        try {
+            $validatedData = $request->validate([
+                'title' => 'required|max:255',
+                'content' => 'required',
+                'category_id' => 'required|exists:komunitas_categories,id',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
+            ]);
+    
+            $validatedData['user_id'] = auth()->id();
+    
+            // Pastikan direktori ada
+            if (!file_exists(public_path('imagedb/guide_book/images'))) {
+                mkdir(public_path('imagedb/guide_book/images'), 0775, true);
+            }
+            if (!file_exists(public_path('imagedb/guide_book/videos'))) {
+                mkdir(public_path('imagedb/guide_book/videos'), 0775, true);
+            }
+    
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('imagedb/guide_book/images'), $fileName);
+                $validatedData['image_path'] = $fileName;
+            }
+    
+            if ($request->hasFile('video')) {
+                $file = $request->file('video');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('imagedb/guide_book/videos'), $fileName);
+                $validatedData['video_path'] = $fileName;
+            }
+    
+            $guideBook = GuideBook::create($validatedData);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Guide book berhasil dibuat',
+                'data' => $guideBook
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal membuat guide book',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        if ($request->hasFile('video')) {
-            $videoPath = $request->file('video')->store('guide_book_videos', 'public');
-            $validatedData['video_path'] = $videoPath;
-        }
-
-        $guideBook = GuideBook::create($validatedData);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Guide book berhasil dibuat',
-            'data' => $guideBook
-        ], 201);
     }
 
     public function show(GuideBook $guideBook)
@@ -62,8 +82,10 @@ class GuideBookController extends Controller
         ]);
     }
 
-    public function update(Request $request, GuideBook $guideBook)
-    {
+
+public function update(Request $request, GuideBook $guideBook)
+{
+    try {
         if ($guideBook->user_id !== auth()->id()) {
             return response()->json([
                 'success' => false,
@@ -80,19 +102,31 @@ class GuideBookController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
+            // Hapus gambar lama
             if ($guideBook->image_path) {
-                Storage::disk('public')->delete($guideBook->image_path);
+                if (file_exists(public_path('imagedb/guide_book/images/' . $guideBook->image_path))) {
+                    unlink(public_path('imagedb/guide_book/images/' . $guideBook->image_path));
+                }
             }
-            $imagePath = $request->file('image')->store('guide_book_images', 'public');
-            $validatedData['image_path'] = $imagePath;
+            
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('imagedb/guide_book/images'), $fileName);
+            $validatedData['image_path'] = $fileName;
         }
 
         if ($request->hasFile('video')) {
+            // Hapus video lama
             if ($guideBook->video_path) {
-                Storage::disk('public')->delete($guideBook->video_path);
+                if (file_exists(public_path('imagedb/guide_book/videos/' . $guideBook->video_path))) {
+                    unlink(public_path('imagedb/guide_book/videos/' . $guideBook->video_path));
+                }
             }
-            $videoPath = $request->file('video')->store('guide_book_videos', 'public');
-            $validatedData['video_path'] = $videoPath;
+            
+            $file = $request->file('video');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('imagedb/guide_book/videos'), $fileName);
+            $validatedData['video_path'] = $fileName;
         }
 
         $guideBook->update($validatedData);
@@ -102,10 +136,20 @@ class GuideBookController extends Controller
             'message' => 'Guide book berhasil diupdate',
             'data' => $guideBook
         ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mengupdate guide book',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
-    public function destroy(GuideBook $guideBook)
-    {
+
+
+public function destroy(GuideBook $guideBook)
+{
+    try {
         if ($guideBook->user_id !== Auth::id()) {
             return response()->json([
                 'success' => false,
@@ -113,11 +157,18 @@ class GuideBookController extends Controller
             ], 403);
         }
 
+        // Hapus gambar jika ada
         if ($guideBook->image_path) {
-            Storage::disk('public')->delete($guideBook->image_path);
+            if (file_exists(public_path('imagedb/guide_book/images/' . $guideBook->image_path))) {
+                unlink(public_path('imagedb/guide_book/images/' . $guideBook->image_path));
+            }
         }
+
+        // Hapus video jika ada
         if ($guideBook->video_path) {
-            Storage::disk('public')->delete($guideBook->video_path);
+            if (file_exists(public_path('imagedb/guide_book/videos/' . $guideBook->video_path))) {
+                unlink(public_path('imagedb/guide_book/videos/' . $guideBook->video_path));
+            }
         }
 
         $guideBook->delete();
@@ -126,7 +177,14 @@ class GuideBookController extends Controller
             'success' => true,
             'message' => 'Guide book berhasil dihapus'
         ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal menghapus guide book',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     public function create()
     {

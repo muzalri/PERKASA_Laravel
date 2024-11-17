@@ -11,41 +11,57 @@ use Illuminate\Support\Facades\Auth;
 class PesanController extends Controller
 {
     public function store(Request $request, Konsultasi $konsultasi)
-{
-    $request->validate([
-        'isi' => 'required_without:gambar',
-        'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-    ]);
-
-    $data = [
-        'konsultasi_id' => $konsultasi->id,
-        'user_id' => auth()->id(),
-        'isi' => $request->isi,
-        'status' => 'belum_dibaca'
-    ];
-
-    if ($request->hasFile('gambar')) {
-        $gambarPath = $request->file('gambar')->store('pesan-gambar', 'public');
-        $data['gambar'] = $gambarPath;
-    }
-
-    $pesan = Pesan::create($data);
-
-    // Load relasi user dan tambahkan data gambar ke response
-    $pesan->load('user');
+    {
+        try {
+            $request->validate([
+                'isi' => 'required_without:gambar',
+                'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
     
-    // Transform response untuk menambahkan URL gambar jika ada
-    $responseData = $pesan->toArray();
-    if ($pesan->gambar) {
-        $responseData['gambar_url'] = asset('storage/' . $pesan->gambar);
+            // Pastikan direktori ada
+            if (!file_exists(public_path('imagedb/konsultasi'))) {
+                mkdir(public_path('imagedb/konsultasi'), 0775, true);
+            }
+    
+            $data = [
+                'konsultasi_id' => $konsultasi->id,
+                'user_id' => auth()->id(),
+                'isi' => $request->isi,
+                'status' => 'belum_dibaca'
+            ];
+    
+            if ($request->hasFile('gambar')) {
+                $file = $request->file('gambar');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('imagedb/konsultasi'), $fileName);
+                $data['gambar'] = $fileName;
+            }
+    
+            $pesan = Pesan::create($data);
+    
+            // Load relasi user
+            $pesan->load('user');
+            
+            // Transform response untuk menambahkan URL gambar
+            $responseData = $pesan->toArray();
+            if ($pesan->gambar) {
+                $responseData['gambar_url'] = url('imagedb/konsultasi/' . $pesan->gambar);
+            }
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesan berhasil dikirim',
+                'data' => $responseData
+            ], 201);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengirim pesan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Pesan berhasil dikirim',
-        'data' => $responseData
-    ], 201);
-}
 
     public function updateStatus(Request $request, Pesan $pesan, $status)
     {
@@ -56,4 +72,12 @@ class PesanController extends Controller
         $pesan->update(['status' => $status]);
         return response()->json(['success' => true]);
     }
+
+    protected $appends = ['gambar_url'];
+
+    public function getGambarUrlAttribute()
+    {
+        return $this->gambar ? url('imagedb/konsultasi/' . $this->gambar) : null;
+    }
+
 }

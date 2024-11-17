@@ -196,18 +196,35 @@ class AuthController extends Controller
         if ($request->hasFile('profile_photo')) {
             // Hapus foto lama jika ada
             if ($user->profile_photo) {
-                Storage::disk('public')->delete($user->profile_photo);
+                if (file_exists(public_path('imagedb/profile_photo/' . $user->profile_photo))) {
+                    unlink(public_path('imagedb/profile_photo/' . $user->profile_photo));
+                }
             }
-            // Simpan foto baru
-            $path = $request->file('profile_photo')->store('profile-photos', 'public');
-            $user->profile_photo = $path;
+
+            // Pastikan direktori ada
+            if (!file_exists(public_path('imagedb/profile_photo'))) {
+                mkdir(public_path('imagedb/profile_photo'), 0775, true);
+            }
+
+            // Generate nama file unik
+            $file = $request->file('profile_photo');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            
+            // Pindahkan file ke folder public/imagedb/profile_photo
+            $file->move(public_path('imagedb/profile_photo'), $fileName);
+            
+            // Simpan nama file ke database
+            $user->profile_photo = $fileName;
             $user->save();
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Foto profil berhasil diperbarui',
-            'data' => $user
+            'data' => [
+                'user' => $user,
+                'photo_url' => url('imagedb/profile_photo/' . $user->profile_photo)
+            ]
         ]);
     }
 
@@ -215,12 +232,11 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        // Cek apakah pengguna memiliki foto profil
         if ($user->profile_photo) {
-            // Hapus foto dari penyimpanan
-            Storage::disk('public')->delete($user->profile_photo);
-            
-            // Reset atribut foto profil di database
+            if (file_exists(public_path('imagedb/profile_photo/' . $user->profile_photo))) {
+                unlink(public_path('imagedb/profile_photo/' . $user->profile_photo));
+            }
+
             $user->profile_photo = null;
             $user->save();
 
