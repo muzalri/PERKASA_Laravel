@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KomunitasController;
-use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\KonsulController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KonsultasiController;
@@ -11,6 +10,8 @@ use App\Http\Controllers\PesanController;
 use App\Http\Controllers\GuideBookController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Api\AuthController as ApiAuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
 Route::get('/', function () {
@@ -25,10 +26,9 @@ Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect()->route('login');
-})->name('logout');
+Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout')
+    ->middleware('auth');
 
 // Profil Pengguna
 Route::middleware('auth')->group(function () {
@@ -40,18 +40,20 @@ Route::middleware('auth')->group(function () {
 });
 
 // Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
 
 
 // Komunitas (CRUD dan Like/Dislike)
-Route::get('/komunitas/index', [KomunitasController::class, 'index'])->middleware('auth')->name('komunitas');
 Route::middleware(['auth'])->group(function () {
+    Route::get('/komunitas', [KomunitasController::class, 'index'])->name('komunitas.index');
     Route::get('/komunitas/create', [KomunitasController::class, 'articlecreate'])->name('komunitas.create');
     Route::post('/komunitas', [KomunitasController::class, 'articlestore'])->name('komunitas.store');
+    Route::get('/komunitas/{komunitas}', [KomunitasController::class, 'articleshow'])->name('komunitas.show');
     Route::get('/komunitas/{komunitas}/edit', [KomunitasController::class, 'articleedit'])->name('komunitas.edit');
     Route::put('/komunitas/{komunitas}', [KomunitasController::class, 'articleupdate'])->name('komunitas.update');
-    Route::delete('/komunitas/{komunitas}', [KomunitasController::class, 'articledestroy'])->name('komunitas.destroy');
-    Route::post('/komunitas/{komunitas}/toggle-like', [KomunitasController::class, 'toggleLike'])->name('komunitas.toggleLike');
+    Route::delete('/komunitas/{komunitas}', [KomunitasController::class, 'articledelete'])->name('komunitas.destroy');
 });
 //route untuk komentar
 Route::middleware(['auth'])->group(function () {
@@ -66,7 +68,10 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/komunitas/{komunitas}', [KomunitasController::class, 'articleshow'])->name('komunitas.show');
 
 // Marketplace dan Konsultasi
+<<<<<<< Updated upstream
 Route::get('/marketplace', [MarketplaceController::class, 'index'])->middleware('auth')->name('marketplace');
+=======
+>>>>>>> Stashed changes
 Route::get('/konsultasi', [KonsultasiController::class, 'index'])->middleware('auth')->name('konsultasi.index');
 
 Route::resource('konsultasi', KonsultasiController::class);
@@ -84,3 +89,29 @@ Route::get('/konsultasi/status-updates', [KonsultasiController::class, 'getStatu
 Route::delete('/konsultasi/{konsultasi}', [KonsultasiController::class, 'destroy'])
     ->name('konsultasi.destroy')
     ->middleware('auth');
+
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard utama admin
+    Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Manajemen Artikel/Komunitas
+    Route::get('/articles', [AdminController::class, 'indexArticles'])->name('articles.index');
+    Route::get('/articles/{komunitas}', [AdminController::class, 'showArticle'])->name('articles.show');
+    Route::delete('/articles/{komunitas}', [AdminController::class, 'deleteArticle'])->name('articles.destroy');
+    Route::delete('/articles/{komunitas}/comments/{komentar}', [AdminController::class, 'deleteKomentar'])->name('articles.comments.destroy');
+    
+    // Manajemen Kategori
+    Route::get('/categories', [AdminController::class, 'indexCategories'])->name('categories.index');
+    Route::post('/categories', [AdminController::class, 'createCategory'])->name('categories.store');
+    Route::delete('/categories/{category}', [AdminController::class, 'deleteCategory'])->name('categories.destroy');
+    
+    // Manajemen Guide Books
+    Route::get('/guide-books', [AdminController::class, 'indexGuideBooks'])->name('guide-books.index');
+    Route::get('/guide-books/create', [AdminController::class, 'createGuideBook'])->name('guide-books.create');
+    Route::post('/guide-books', [AdminController::class, 'storeGuideBook'])->name('guide-books.store');
+    Route::get('/guide-books/{guideBook}', [AdminController::class, 'showGuideBook'])->name('guide-books.show');
+    Route::get('/guide-books/{guideBook}/edit', [AdminController::class, 'editGuideBook'])->name('guide-books.edit');
+    Route::put('/guide-books/{guideBook}', [AdminController::class, 'updateGuideBook'])->name('guide-books.update');
+    Route::delete('/guide-books/{guideBook}', [AdminController::class, 'destroyGuideBook'])->name('guide-books.destroy');
+});
