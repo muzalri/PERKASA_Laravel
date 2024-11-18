@@ -7,6 +7,7 @@ use App\Models\Konsultasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Pesan;
 
 class KonsultasiController extends Controller
 {
@@ -80,25 +81,44 @@ class KonsultasiController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'pakar_id' => 'required|exists:users,id',
-        ]);
+        try {
+            $request->validate([
+                'judul' => 'required',
+                'pakar_id' => 'required|exists:users,id',
+                'isi' => 'required|string' // tambahan validasi untuk isi pesan
+            ]);
 
-        $konsultasi = Konsultasi::create([
-            'user_id' => Auth::id(),
-            'judul' => $request->judul,
-            'deskripsi' => $request->deskripsi,
-            'pakar_id' => $request->pakar_id,
-            'status' => 'pending'
-        ]);
+            // Buat konsultasi baru
+            $konsultasi = Konsultasi::create([
+                'user_id' => auth()->id(),
+                'pakar_id' => $request->pakar_id,
+                'judul' => $request->judul
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Konsultasi berhasil dibuat',
-            'data' => $konsultasi
-        ], 201);
+            // Buat pesan pertama
+            $pesan = Pesan::create([
+                'konsultasi_id' => $konsultasi->id,
+                'user_id' => auth()->id(),
+                'isi' => $request->isi,
+                'status' => 'belum_dibaca'
+            ]);
+
+            // Load relasi yang diperlukan
+            $konsultasi->load(['user', 'pakar', 'pesans.user']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Konsultasi berhasil dibuat',
+                'data' => $konsultasi
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal membuat konsultasi',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function storePesan(Request $request, Konsultasi $konsultasi)
@@ -154,6 +174,49 @@ class KonsultasiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $messages
+        ]);
+    }
+
+    public function destroy(Konsultasi $konsultasi)
+    {
+        $user = auth()->user();
+        
+        // Verifikasi akses
+        if ($user->role === 'pakar') {
+            if ($konsultasi->pakar_id !== $user->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda tidak memiliki akses untuk menghapus konsultasi ini.'
+                ], 403);
+            }
+            // Update status hanya untuk pakar
+            $konsultasi->update(['status_pakar' => 'deleted']);
+        } else {
+            if ($konsultasi->user_id !== $user->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda tidak memiliki akses untuk menghapus konsultasi ini.'
+                ], 403);
+            }
+            // Update status hanya untuk user
+            $konsultasi->update(['status_user' => 'deleted']);
+        }
+
+        // Cek apakah kedua status sudah dihapus
+        if ($konsultasi->status_user === 'deleted' && $konsultasi->status_pakar === 'deleted') {
+            // Hapus semua pesan terkait
+            Pesan::where('konsultasi_id', $konsultasi->id)->delete();
+            $konsultasi->forceDelete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Konsultasi dan semua pesan terkait berhasil dihapus.'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Konsultasi berhasil dihapus dari daftar Anda.'
         ]);
     }
 } 

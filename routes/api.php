@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/konsultasi/{konsultasi}/pesan', [PesanController::class, 'store']);
     Route::put('/pesan/{pesan}/status/{status}', [PesanController::class, 'updateStatus']);
     Route::get('/konsultasi/{konsultasi}/messages-status', [KonsultasiController::class, 'getMessagesStatus']);
+    Route::delete('/konsultasi/{konsultasi}', [KonsultasiController::class, 'destroy']);
 
     // Guide Book
     Route::get('/guide-books', [GuideBookController::class, 'index']);

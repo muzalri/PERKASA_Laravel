@@ -94,37 +94,46 @@ class KonsultasiController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Konsultasi $konsultasi)
-    {
-        $user = auth()->user();
+{
+    $user = auth()->user();
+    
+    // Verifikasi akses
+    if ($user->role === 'pakar') {
+        if ($konsultasi->pakar_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses untuk menghapus konsultasi ini.'
+            ], 403);
+        }
+        // Update status hanya untuk pakar
+        $konsultasi->update(['status_pakar' => 'deleted']);
+    } else {
+        if ($konsultasi->user_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses untuk menghapus konsultasi ini.'
+            ], 403);
+        }
+        // Update status hanya untuk user
+        $konsultasi->update(['status_user' => 'deleted']);
+    }
+
+    // Cek apakah kedua status sudah dihapus
+    if ($konsultasi->status_user === 'deleted' && $konsultasi->status_pakar === 'deleted') {
+        // Hapus semua pesan terkait
+        Pesan::where('konsultasi_id', $konsultasi->id)->delete();
+        $konsultasi->forceDelete();
         
-        // Verifikasi akses
-        if ($user->role === 'pakar') {
-            if ($konsultasi->pakar_id !== $user->id) {
-                return redirect()->route('konsultasi.index')
-                    ->with('error', 'Anda tidak memiliki akses untuk menghapus konsultasi ini.');
-            }
-            // Update status hanya untuk pakar
-            $konsultasi->update(['status_pakar' => 'deleted']);
-        } else {
-            if ($konsultasi->user_id !== $user->id) {
-                return redirect()->route('konsultasi.index')
-                    ->with('error', 'Anda tidak memiliki akses untuk menghapus konsultasi ini.');
-            }
-            // Update status hanya untuk user
-            $konsultasi->update(['status_user' => 'deleted']);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Konsultasi dan semua pesan terkait berhasil dihapus.'
+        ]);
+    }
 
-        // Cek apakah kedua status sudah dihapus
-        if ($konsultasi->status_user === 'deleted' && $konsultasi->status_pakar === 'deleted') {
-            // Hapus semua pesan terkait
-            Pesan::where('konsultasi_id', $konsultasi->id)->delete(); // Hapus pesan terkait
-            $konsultasi->forceDelete(); // Hapus konsultasi dari database
-            return redirect()->route('konsultasi.index')
-                ->with('success', 'Konsultasi dan semua pesan terkait berhasil dihapus dari database.');
-        }
-
-        return redirect()->route('konsultasi.index')
-            ->with('success', 'Konsultasi berhasil dihapus dari daftar Anda.');
+    return response()->json([
+        'success' => true,
+        'message' => 'Konsultasi berhasil dihapus dari daftar Anda.'
+        ]);
     }
 
     public function kirimPesan(Request $request, $id)
