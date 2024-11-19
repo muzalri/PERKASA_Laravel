@@ -61,7 +61,10 @@
                     <a href="{{ route('admin.articles.index') }}" class="text-gray-300 hover:text-white px-3 py-2">Artikel</a>
                     <a href="{{ route('admin.categories.index') }}" class="text-gray-300 hover:text-white px-3 py-2">Kategori</a>
                     <a href="{{ route('admin.guide-books.index') }}" class="text-gray-300 hover:text-white px-3 py-2">Panduan</a>
-                    <button id="logoutBtn" class="text-gray-300 hover:text-white px-3 py-2">Logout</button>
+                    <button onclick="logout()" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Logout
+                    </button>
                 </div>
             </div>
         </div>
@@ -86,23 +89,35 @@
 
     <script>
     // Handle logout
-    $('#logoutBtn').click(function() {
+    function logout() {
+        if (!confirm('Yakin ingin keluar?')) {
+            return;
+        }
+
         const token = localStorage.getItem('token');
-        $.ajax({
-            url: '/api/admin/logout',
+        
+        fetch('/api/admin/logout', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function() {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '/login';
+                'Content-Type': 'application/json'
             }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            } else {
+                alert(data.message || 'Gagal logout');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat logout');
         });
-    });
+    }
     </script>
 </body>
 </html>

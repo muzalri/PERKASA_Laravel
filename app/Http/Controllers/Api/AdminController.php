@@ -318,4 +318,21 @@ class AdminController extends Controller
         }
     }
 
+    public function logout(Request $request)
+    {
+        try {
+            $request->user()->currentAccessToken()->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil logout'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal logout'
+            ], 500);
+        }
+    }
+
 }

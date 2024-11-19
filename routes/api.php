@@ -82,6 +82,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::delete('/guide-books/{guideBook}', [AdminController::class, 'destroyGuideBook']);
         Route::get('/dashboard-stats', [AdminController::class, 'getDashboardStats']);
         Route::get('/verify-token', [AdminController::class, 'verifyToken']);
+        Route::post('/logout', [AdminController::class, 'logout'])->middleware('auth:sanctum');
     });
 
     Route::get('/admin/verify-token', [AdminController::class, 'verifyToken']);
