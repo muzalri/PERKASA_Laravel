@@ -6,18 +6,16 @@
 @section('content')
 <div class="bg-white rounded-lg shadow-sm">
     <div class="p-6">
-        <form action="{{ route('admin.guide-books.update', $guideBook) }}" method="POST" enctype="multipart/form-data">
+        <div id="notification" class="hidden mb-4 p-4 rounded"></div>
+
+        <form id="editGuideBookForm" class="space-y-6">
             @csrf
-            @method('PUT')
-            <div class="space-y-6">
+            <div class="grid grid-cols-1 gap-6">
                 <!-- Judul -->
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700">Judul</label>
-                    <input type="text" name="title" id="title" value="{{ old('title', $guideBook->title) }}" required
+                    <input type="text" name="title" id="title" required
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    @error('title')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
                 </div>
 
                 <!-- Kategori -->
@@ -26,70 +24,32 @@
                     <select name="category_id" id="category_id" required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         <option value="">Pilih Kategori</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" 
-                                {{ old('category_id', $guideBook->category_id) == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
                     </select>
-                    @error('category_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
                 </div>
 
                 <!-- Konten -->
                 <div>
                     <label for="content" class="block text-sm font-medium text-gray-700">Konten</label>
                     <textarea name="content" id="content" rows="10" required
-                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('content', $guideBook->content) }}</textarea>
-                    @error('content')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                                     focus:border-blue-500 focus:ring-blue-500"
+                              placeholder="Masukkan konten panduan di sini..."></textarea>
                 </div>
 
                 <!-- Gambar -->
                 <div>
-                    <label for="image" class="block text-sm font-medium text-gray-700">Gambar</label>
-                    @if($guideBook->image_path)
-                        <div class="mt-2 mb-4">
-                            <img src="{{ asset('imagedb/guide_book/images/' . $guideBook->image_path) }}" 
-                                 alt="Current image" class="max-w-xs rounded">
-                        </div>
-                    @endif
+                    <label for="image" class="block text-sm font-medium text-gray-700">Gambar Baru (Opsional)</label>
                     <input type="file" name="image" id="image" accept="image/*"
-                           class="mt-1 block w-full text-sm text-gray-500
-                                  file:mr-4 file:py-2 file:px-4
-                                  file:rounded-md file:border-0
-                                  file:text-sm file:font-semibold
-                                  file:bg-blue-50 file:text-blue-700
-                                  hover:file:bg-blue-100">
-                    @error('image')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                           class="mt-1 block w-full">
+                    <div id="current-image" class="mt-2"></div>
                 </div>
 
                 <!-- Video -->
                 <div>
-                    <label for="video" class="block text-sm font-medium text-gray-700">Video</label>
-                    @if($guideBook->video_path)
-                        <div class="mt-2 mb-4">
-                            <video width="320" height="240" controls class="rounded">
-                                <source src="{{ asset('imagedb/guide_book/videos/' . $guideBook->video_path) }}" type="video/mp4">
-                                Browser Anda tidak mendukung tag video.
-                            </video>
-                        </div>
-                    @endif
+                    <label for="video" class="block text-sm font-medium text-gray-700">Video Baru (Opsional)</label>
                     <input type="file" name="video" id="video" accept="video/*"
-                           class="mt-1 block w-full text-sm text-gray-500
-                                  file:mr-4 file:py-2 file:px-4
-                                  file:rounded-md file:border-0
-                                  file:text-sm file:font-semibold
-                                  file:bg-blue-50 file:text-blue-700
-                                  hover:file:bg-blue-100">
-                    @error('video')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                           class="mt-1 block w-full">
+                    <div id="current-video" class="mt-2"></div>
                 </div>
 
                 <!-- Tombol Submit -->
@@ -109,14 +69,161 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/YOUR_API_KEY/tinymce/5/tinymce.min.js"></script>
 <script>
-    tinymce.init({
-        selector: '#content',
-        height: 400,
-        plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
-        toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help'
+let guideBookId;
+
+$(document).ready(function() {
+    // Ambil ID dari URL
+    const pathArray = window.location.pathname.split('/');
+    guideBookId = pathArray[pathArray.length - 2];
+
+    // Load data
+    loadCategories();
+    loadGuideBook();
+
+    // Handle form submit
+    $('#editGuideBookForm').on('submit', function(e) {
+        e.preventDefault();
+        updateGuideBook();
     });
+});
+
+function loadCategories() {
+    const token = localStorage.getItem('token');
+    
+    $.ajax({
+        url: '/api/admin/categories',
+        type: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+        },
+        success: function(response) {
+            if (response.success) {
+                let select = $('#category_id');
+                response.data.forEach(function(category) {
+                    select.append(new Option(category.name, category.id));
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            showNotification('Gagal memuat kategori', 'error');
+        }
+    });
+}
+
+function loadGuideBook() {
+    const token = localStorage.getItem('token');
+    
+    $.ajax({
+        url: `/api/admin/guide-books/${guideBookId}`,
+        type: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+        },
+        success: function(response) {
+            if (response.success) {
+                const guideBook = response.data;
+                $('#title').val(guideBook.title);
+                $('#category_id').val(guideBook.category_id.id);
+                $('#content').val(guideBook.content);
+
+                // Tampilkan gambar jika ada
+                if (guideBook.image_path) {
+                    $('#current-image').html(`
+                        <img src="/imagedb/guide_book/images/${guideBook.image_path}" 
+                             alt="Current image" class="max-w-xs rounded">
+                    `);
+                }
+
+                // Tampilkan video jika ada
+                if (guideBook.video_path) {
+                    $('#current-video').html(`
+                        <video width="320" height="240" controls class="rounded">
+                            <source src="/imagedb/guide_book/videos/${guideBook.video_path}" 
+                                    type="video/mp4">
+                            Browser Anda tidak mendukung tag video.
+                        </video>
+                    `);
+                }
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            showNotification('Gagal memuat data guide book', 'error');
+            if (xhr.status === 401) {
+                window.location.href = '/login';
+            }
+        }
+    });
+}
+
+function updateGuideBook() {
+    const token = localStorage.getItem('token');
+    let formData = new FormData($('#editGuideBookForm')[0]);
+    
+    // Tambahkan _method field untuk Laravel agar mengenali sebagai PUT request
+    formData.append('_method', 'PUT');
+
+    $.ajax({
+        url: `/api/admin/guide-books/${guideBookId}`,
+        type: 'POST', // Tetap menggunakan POST untuk upload file
+        data: formData,
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-CSRF-TOKEN': $('input[name="_token"]').val()
+        },
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.success) {
+                showNotification('Guide book berhasil diperbarui!', 'success');
+                setTimeout(function() {
+                    window.location.href = '/admin/guide-books';
+                }, 1500);
+            } else {
+                showNotification(response.message || 'Terjadi kesalahan', 'error');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            if (xhr.status === 401) {
+                window.location.href = '/login';
+            } else if (xhr.status === 422) {
+                // Validation errors
+                const errors = xhr.responseJSON.errors;
+                let errorMessage = '<ul>';
+                Object.keys(errors).forEach(key => {
+                    errorMessage += `<li>${errors[key][0]}</li>`;
+                });
+                errorMessage += '</ul>';
+                showNotification(errorMessage, 'error');
+            } else {
+                showNotification('Terjadi kesalahan pada server', 'error');
+            }
+        }
+    });
+}
+
+function showNotification(message, type = 'error') {
+    const notification = $('#notification');
+    
+    notification.removeClass('bg-green-100 text-green-700 bg-red-100 text-red-700');
+    
+    if (type === 'success') {
+        notification.addClass('bg-green-100 text-green-700');
+    } else {
+        notification.addClass('bg-red-100 text-red-700');
+    }
+    
+    notification.html(message).removeClass('hidden');
+    
+    setTimeout(() => {
+        notification.addClass('hidden');
+    }, 3000);
+}
 </script>
 @endpush
 @endsection 

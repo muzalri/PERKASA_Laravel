@@ -40,12 +40,12 @@ class GuideBookController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('guide_book_images', 'public');
+            $imagePath = $request->file('image')->store('public');
             $validatedData['image_path'] = $imagePath;
         }
 
         if ($request->hasFile('video')) {
-            $videoPath = $request->file('video')->store('guide_book_videos', 'public');
+            $videoPath = $request->file('video')->store('public');
             $validatedData['video_path'] = $videoPath;
         }
 

@@ -80,6 +80,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::post('/guide-books', [AdminController::class, 'storeGuideBook']);
         Route::put('/guide-books/{guideBook}', [AdminController::class, 'updateGuideBook']);
         Route::delete('/guide-books/{guideBook}', [AdminController::class, 'destroyGuideBook']);
+        Route::get('/dashboard-stats', [AdminController::class, 'getDashboardStats']);
+        Route::get('/verify-token', [AdminController::class, 'verifyToken']);
     });
+
+    Route::get('/admin/verify-token', [AdminController::class, 'verifyToken']);
 });
 

@@ -11,7 +11,11 @@
             <p class="text-gray-600">Silakan masuk ke akun Anda</p>
         </div>
 
-        <form method="POST" action="{{ route('login') }}" class="space-y-6">
+        <!-- Notifikasi -->
+        <div id="notification" class="hidden mb-4 p-4 rounded">
+        </div>
+
+        <form id="loginForm" class="space-y-6">
             @csrf
             
             <!-- Email -->
@@ -19,9 +23,7 @@
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                 <input type="email" name="email" id="email" required 
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
-                @error('email')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <p class="mt-1 text-sm text-red-600 email-error"></p>
             </div>
 
             <!-- Password -->
@@ -29,9 +31,7 @@
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                 <input type="password" name="password" id="password" required 
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
-                @error('password')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <p class="mt-1 text-sm text-red-600 password-error"></p>
             </div>
 
             <!-- Remember Me -->
@@ -67,4 +67,74 @@
         </div>
     </div>
 </div>
-@endsection 
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#loginForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Reset error messages
+        $('.text-red-600').text('');
+        const notification = $('#notification');
+        notification.removeClass().addClass('hidden');
+
+        // Ambil data form
+        const formData = {
+            email: $('#email').val(),
+            password: $('#password').val(),
+            remember: $('#remember').is(':checked')
+        };
+
+        // Debug data
+        console.log('Sending data:', formData);
+
+        $.ajax({
+            url: '/api/admin/login',
+            type: 'POST',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Success response:', response);
+                
+                if (response.success) {
+                    // Tampilkan notifikasi sukses
+                    notification
+                        .removeClass('hidden')
+                        .addClass('mb-4 p-4 rounded bg-green-100 text-green-700')
+                        .text('Login berhasil! Mengalihkan...');
+
+                    // Simpan token dan data user
+                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('user', JSON.stringify(response.data.admin));
+
+                    // Redirect ke dashboard admin
+                    setTimeout(function() {
+                        window.location.href = '/admin/';
+                    }, 1000);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseJSON);
+                
+                notification
+                    .removeClass('hidden')
+                    .addClass('mb-4 p-4 rounded bg-red-100 text-red-700');
+
+                if (xhr.status === 401) {
+                    notification.text('Email atau password salah');
+                } else if (xhr.status === 403) {
+                    notification.text('Akses ditolak. Anda bukan admin.');
+                } else {
+                    notification.text(xhr.responseJSON?.message || 'Terjadi kesalahan pada server');
+                }
+            }
+        });
+    });
+});
+</script>
+@endpush

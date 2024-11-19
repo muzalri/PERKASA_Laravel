@@ -53,41 +53,43 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        try {
+            if (!Auth::attempt($request->only('email', 'password'))) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email atau password salah'
+                ], 401);
+            }
 
-        if ($validator->fails()) {
+            $user = User::where('email', $request->email)->firstOrFail();
+            $token = $user->createToken('auth_token')->plainTextToken;
+            
+            // Cek role admin
+            $isAdmin = $user->role === 'admin';
+            
+            if ($request->is('api/admin/*') && !$isAdmin) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak. Anda bukan admin.'
+                ], 403);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login berhasil',
+                'data' => [
+                    'user' => $user,
+                    'token' => $token,
+                    'is_admin' => $isAdmin
+                ]
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validasi gagal',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'Terjadi kesalahan pada server',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Email atau password salah'
-            ], 401);
-        }
-
-        $user = User::where('email', $request->email)->firstOrFail();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        // Tambahkan pengecekan role admin
-        $isAdmin = $user->role === 'admin';
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Login berhasil',
-            'data' => [
-                'user' => $user,
-                'token' => $token,
-                'is_admin' => $isAdmin
-            ]
-        ]);
     }
 
     public function logout(Request $request)
