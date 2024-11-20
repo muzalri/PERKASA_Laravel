@@ -46,6 +46,14 @@ class KonsultasiController extends Controller
     {
         $user = auth()->user();
         
+        // Tambahkan logging
+        \Log::info('Konsultasi access check', [
+            'user_id' => $user->id,
+            'konsultasi_user_id' => $konsultasi->user_id,
+            'konsultasi_pakar_id' => $konsultasi->pakar_id,
+            'user_role' => $user->role
+        ]);
+        
         // Verifikasi akses
         if ($user->id === $konsultasi->user_id || $user->id === $konsultasi->pakar_id) {
             // Update status pesan menjadi dibaca
@@ -62,9 +70,15 @@ class KonsultasiController extends Controller
             ]);
         }
 
+        // Tambahkan detail error
         return response()->json([
             'success' => false,
-            'message' => 'Unauthorized access'
+            'message' => 'Unauthorized access',
+            'debug' => [
+                'user_id' => $user->id,
+                'konsultasi_user_id' => $konsultasi->user_id,
+                'konsultasi_pakar_id' => $konsultasi->pakar_id
+            ]
         ], 403);
     }
 
