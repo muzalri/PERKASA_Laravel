@@ -50,4 +50,9 @@ class AdminController extends Controller
     {
         return view('admin.articles.show', ['id' => $id]);
     }
+
+    public function indexRoleRequests()
+    {
+        return view('admin.role-requests.index');
+    }
 }

@@ -28,5 +28,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Articles
     Route::get('/articles', [AdminController::class, 'indexArticles'])->name('articles.index');
     Route::get('/articles/{id}', [AdminController::class, 'showArticle'])->name('articles.show');
+
+    // Role Change Requests
+    Route::get('/role-requests', [AdminController::class, 'indexRoleRequests'])->name('role-requests.index');
 });
 

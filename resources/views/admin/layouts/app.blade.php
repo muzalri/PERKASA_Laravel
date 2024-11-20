@@ -61,6 +61,9 @@
                     <a href="{{ route('admin.articles.index') }}" class="text-gray-300 hover:text-white px-3 py-2">Artikel</a>
                     <a href="{{ route('admin.categories.index') }}" class="text-gray-300 hover:text-white px-3 py-2">Kategori</a>
                     <a href="{{ route('admin.guide-books.index') }}" class="text-gray-300 hover:text-white px-3 py-2">Panduan</a>
+                    <a href="{{ route('admin.role-requests.index') }}" class="text-gray-300 hover:text-white px-3 py-2">
+                        Permintaan Role
+                    </a>
                     <button onclick="logout()" class="text-gray-600 hover:text-gray-900">
                         <i class="fas fa-sign-out-alt mr-2"></i>
                         Logout

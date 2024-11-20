@@ -84,6 +84,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::get('/dashboard-stats', [AdminController::class, 'getDashboardStats']);
         Route::get('/verify-token', [AdminController::class, 'verifyToken']);
         Route::post('/logout', [AdminController::class, 'logout'])->middleware('auth:sanctum');
+
+        // Route untuk role change request
+        Route::get('/role-change-requests', [RoleChangeRequestController::class, 'index']);
+        Route::post('/role-change-requests/{id}', [RoleChangeRequestController::class, 'acceptRoleChange']);
     });
 
     Route::get('/admin/verify-token', [AdminController::class, 'verifyToken']);
