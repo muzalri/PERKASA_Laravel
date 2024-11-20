@@ -22,13 +22,17 @@ class GuideBookController extends Controller
 
     public function store(Request $request)
     {
+        // Set timeout lebih lama untuk upload file besar
+        set_time_limit(300);
+        ini_set('max_execution_time', 300);
+        
         try {
             $validatedData = $request->validate([
                 'title' => 'required|max:255',
                 'content' => 'required',
                 'category_id' => 'required|exists:komunitas_categories,id',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
+                'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:61440',
             ]);
     
             $validatedData['user_id'] = auth()->id();
@@ -98,7 +102,7 @@ class GuideBookController extends Controller
                 'content' => 'required',
                 'category_id' => 'required|exists:komunitas_categories,id',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:20000',
+                'video' => 'nullable|mimes:mp4,mov,ogg,qt|max:61440',
             ]);
 
             if ($request->hasFile('image')) {

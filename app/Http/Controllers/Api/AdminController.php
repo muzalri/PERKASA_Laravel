@@ -247,25 +247,28 @@ class AdminController extends Controller
 
     public function deleteKomentar(Komunitas $komunitas, Komentar $komentar)
     {
-        // Verifikasi bahwa komentar berada di artikel yang benar
-        if ($komentar->komunitas_id !== $komunitas->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Komentar tidak ditemukan di artikel ini'
-            ], 404);
-        }
-
         try {
+            // Cek apakah komentar ada
+            if (!$komentar) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Komentar tidak ditemukan'
+                ], 404);
+            }
+
+            // Hapus komentar
             $komentar->delete();
             
             return response()->json([
                 'success' => true,
                 'message' => 'Komentar berhasil dihapus'
             ]);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menghapus komentar'
+                'message' => 'Gagal menghapus komentar',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
