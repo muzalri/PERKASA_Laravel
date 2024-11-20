@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/konsultasi/{konsultasi}', [KonsultasiController::class, 'destroy']);
 
     // Guide Book
-    Route::get('/guide-books', [GuideBookController::class, 'index']);-
+    Route::get('/guide-books', [GuideBookController::class, 'index']);
     Route::get('/guide-books/{guideBook}', [GuideBookController::class, 'show']);
     Route::post('/request-role-change', [RoleChangeRequestController::class, 'requestRoleChange']);
 

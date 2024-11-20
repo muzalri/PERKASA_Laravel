@@ -86,9 +86,24 @@ function loadArticle() {
                     <div class="bg-gray-50 p-4 rounded-lg">
                         <div class="flex justify-between items-start">
                             <div>
-                                <p class="font-medium">${comment.user?.name || 'Anonymous'}</p>
-                                <p class="text-sm text-gray-500">${new Date(comment.created_at).toLocaleDateString('id-ID')}</p>
-                                <p class="mt-2">${comment.content}</p>
+                                <div class="flex items-center gap-2">
+                                    ${comment.user?.profile_photo ? 
+                                        `<img src="/imagedb/profile_photo/${comment.user.profile_photo}" 
+                                         alt="Profile" class="w-8 h-8 rounded-full">` : 
+                                        `<div class="w-8 h-8 bg-gray-300 rounded-full"></div>`
+                                    }
+                                    <div>
+                                        <p class="font-medium">${comment.user?.name || 'Pengguna'}</p>
+                                        <p class="text-sm text-gray-500">
+                                            ${new Date(comment.created_at).toLocaleDateString('id-ID', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="mt-2">${comment.body}</p>
                             </div>
                             <button onclick="deleteComment(${comment.id})" 
                                     class="text-red-600 hover:text-red-900">
