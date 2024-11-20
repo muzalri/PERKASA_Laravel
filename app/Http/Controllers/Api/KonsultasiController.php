@@ -47,27 +47,25 @@ class KonsultasiController extends Controller
         $user = auth()->user();
         
         // Verifikasi akses
-        if ($user->id !== $konsultasi->user_id && $user->id !== $konsultasi->pakar_id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized access'
-            ], 403);
-        }
-
-        // Update status pesan menjadi dibaca
-        if ($user->id === $konsultasi->pakar_id || $user->id === $konsultasi->user_id) {
+        if ($user->id === $konsultasi->user_id || $user->id === $konsultasi->pakar_id) {
+            // Update status pesan menjadi dibaca
             $konsultasi->pesans()
                 ->where('user_id', '!=', $user->id)
                 ->where('status', 'belum_dibaca')
                 ->update(['status' => 'dibaca']);
+
+            $konsultasi->load(['pesans.user', 'user', 'pakar']);
+            
+            return response()->json([
+                'success' => true,
+                'data' => $konsultasi
+            ]);
         }
 
-        $konsultasi->load(['pesans.user', 'user', 'pakar']);
-        
         return response()->json([
-            'success' => true,
-            'data' => $konsultasi
-        ]);
+            'success' => false,
+            'message' => 'Unauthorized access'
+        ], 403);
     }
 
     public function create()

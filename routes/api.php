@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/komunitas', [KomunitasController::class, 'store']);
     Route::get('/komunitas/categories', [KomunitasController::class, 'getCategories']);
     Route::get('/komunitas/{komunitas}', [KomunitasController::class, 'show']);
+    Route::delete('/komunitas/{komunitas}', [KomunitasController::class, 'destroy']);
     Route::post('/komunitas/{komunitas}/like', [KomunitasController::class, 'toggleLike']);
     Route::post('/komunitas/{komunitas}/komentar', [KomunitasController::class, 'komentarStore']);
     Route::delete('/komentar/{komentar}', [KomunitasController::class, 'destroyKomentar']);
@@ -45,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/konsultasi/{konsultasi}', [KonsultasiController::class, 'destroy']);
 
     // Guide Book
-    Route::get('/guide-books', [GuideBookController::class, 'index']);
+    Route::get('/guide-books', [GuideBookController::class, 'index']);-
     Route::get('/guide-books/{guideBook}', [GuideBookController::class, 'show']);
     Route::post('/request-role-change', [RoleChangeRequestController::class, 'requestRoleChange']);
 
